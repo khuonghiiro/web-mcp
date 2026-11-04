@@ -5,7 +5,7 @@ import { projectPath, readJson, writeJson, type Spec } from '../core.js';
 
 export async function generate(dir: string, name: string, outputRoot: string) {
   const spec = await readJson(join(dir, 'api-spec.json')) as Spec;
-  if (spec.openapi !== '3.0.3' || !spec.servers?.[0]?.url || !Object.keys(spec.paths ?? {}).length) throw new Error('Expected a non-empty Studio-generated OpenAPI spec.');
+  if (spec.openapi !== '3.0.3' || !spec.servers?.[0]?.url || !Object.keys(spec.paths ?? {}).length) throw new Error('Cần bản đặc tả OpenAPI có dữ liệu do Studio tạo. Hãy chạy bước phân tích trước.');
   const output = projectPath(outputRoot, name);
   await mkdir(resolve(outputRoot), { recursive: true });
   await mkdir(output, { recursive: false }); // Never overwrite an existing generated project.

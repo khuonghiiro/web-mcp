@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Web-to-MCP Studio — Thu thập API",
+  "version": "0.2.0",
+  "description": "Ghi yêu cầu API trên tab đang đăng nhập và xuất dữ liệu cục bộ cho Web-to-MCP Studio.",
+  "minimum_chrome_version": "118",
+  "permissions": ["activeTab", "debugger", "downloads"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "Web-to-MCP Studio" }
+}

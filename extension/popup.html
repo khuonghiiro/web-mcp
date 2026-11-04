@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><title>Web-to-MCP Studio</title><link rel="stylesheet" href="popup.css"></head>
+<body>
+  <h1>Web-to-MCP Studio</h1>
+  <p>Thu thập API ngay trên tab đang đăng nhập.</p>
+  <h2>Kết nối AI điều khiển tab</h2>
+  <p>Yêu cầu AI gọi <code>studio_extension_pair</code>, dán mã kết nối bên dưới.</p>
+  <input id="pairing" type="password" placeholder="http://127.0.0.1:…/#…" aria-label="Mã kết nối AI">
+  <button id="connect">Kết nối AI với tab này</button>
+  <button id="disconnect">Ngắt kết nối AI</button>
+  <p id="bridge-status" role="status">Chưa kết nối AI.</p>
+  <h2>Thu thập thủ công (tùy chọn)</h2>
+  <p id="status" role="status" aria-live="polite">Đang kiểm tra…</p>
+  <button id="start">Bắt đầu ghi tab này</button>
+  <button id="stop">Dừng và tải file dữ liệu</button>
+  <p>Sau khi bắt đầu, đóng bảng này, tải lại trang hoặc thực hiện tìm kiếm, phân trang… rồi mở lại tiện ích để dừng.</p>
+  <p class="note">Chỉ ghi tab bạn chọn. File xuất có thể chứa cookie và dữ liệu riêng tư; không gửi hoặc commit file này. Không mở DevTools trong lúc ghi.</p>
+  <p>Tiếp theo: mở <strong>run.bat → 7. Nhập dữ liệu từ tiện ích</strong>.</p>
+  <script src="popup.js"></script>
+</body>
+</html>

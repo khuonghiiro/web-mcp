@@ -3,12 +3,12 @@ import { resolve, dirname } from 'node:path';
 import { z } from 'zod';
 
 export function projectPath(root: string, name: string): string {
-  if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) throw new Error('Name must contain 1–64 lowercase letters, digits, _ or -.');
+  if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) throw new Error('Tên dự án cần 1–64 ký tự: chữ thường không dấu, số, _ hoặc -.');
   return resolve(root, name);
 }
 export function httpUrl(value: string): URL {
   const url = new URL(value);
-  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Expected HTTP(S) URL without credentials.');
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Cần địa chỉ HTTP(S) hợp lệ, không chứa thông tin đăng nhập.');
   return url;
 }
 export async function readJson(path: string): Promise<unknown> { return JSON.parse(await readFile(path, 'utf8')); }

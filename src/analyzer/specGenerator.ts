@@ -37,7 +37,7 @@ export async function analyze(dir: string, name: string, explicitOrigin?: string
   const origin = explicitOrigin ? httpUrl(explicitOrigin).origin : z.object({ targetOrigin: z.string().url() }).parse(await readJson(join(dir, 'session.json'))).targetOrigin;
   const filtered = filterHar(await readJson(join(dir, 'traffic.har')), origin);
   const spec = makeSpec(filtered, origin, name);
-  if (!Object.keys(spec.paths).length) throw new Error('No API requests found. Browse API-backed pages or supply --origin for a separate API host.');
+  if (!Object.keys(spec.paths).length) throw new Error('Chưa tìm thấy yêu cầu API. Hãy thao tác thêm trên website hoặc nhập địa chỉ máy chủ API riêng bằng --origin.');
   await writeJson(join(dir, 'api-spec.json'), spec);
   await writeJson(join(dir, 'analysis.json'), { origin, keptRequests: filtered.log.entries.length, operations: Object.values(spec.paths).reduce((n, p) => n + Object.keys(p).length, 0), note: 'Schemas inferred from observations; required fields and endpoint semantics need review.' });
   return spec;

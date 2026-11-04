@@ -4,6 +4,29 @@ CLI TypeScript biến những API quan sát được khi duyệt website thành 
 
 ## Cài đặt
 
+### Windows: chạy bằng file BAT
+
+Sau khi clone/pull code hoặc giải nén project:
+
+1. Nhấp đúp `setup.bat`. Script kiểm tra Node.js 22+; nếu thiếu/cũ sẽ thử cài Node.js LTS bằng winget. Sau đó dùng đúng phiên bản pnpm trong `package.json`, cài dependency theo lockfile, kiểm tra trình duyệt, kiểm tra TypeScript và build. Nếu đã có Chrome/Edge thì dùng trình duyệt đó; nếu chưa có thì tải Chromium (cần đủ dung lượng trống).
+2. Nhấp đúp `run.bat`. Chọn Auto để chạy toàn bộ pipeline hoặc chọn Scout, Analyze, Generate riêng. Menu hỏi tên dự án, URL và trình duyệt; Enter chọn trình duyệt tự phát hiện, không cần nhập lệnh.
+
+Máy cần Internet khi setup. Cài Node.js có thể hiện hộp thoại quyền quản trị của Windows. Nếu không có winget, cài Node.js LTS từ https://nodejs.org rồi mở lại `setup.bat`. pnpm được dùng qua bản đã cài đúng phiên bản hoặc npx; không thay đổi pnpm global. Sau mỗi lần pull có thay đổi dependency, chạy lại `setup.bat`.
+
+Nếu chưa setup, `run.bat` sẽ gọi setup khi thiếu Node hoặc dependency; sau khi hoàn tất, mở lại `run.bat`. Script luôn chạy tại thư mục project kể cả khi mở từ thư mục khác. Đây là ứng dụng CLI có menu trong terminal.
+
+Có thể dùng lệnh trực tiếp:
+
+```bat
+setup.bat -SkipBrowser
+run.bat --help
+run.bat auto --url https://example.com --name my-site --interactive --channel chrome
+```
+
+`-SkipBrowser` bỏ tải Chromium để dùng Chrome/Edge có sẵn. Đặt biến môi trường `WEB_MCP_NO_PAUSE=1` nếu chạy BAT trong CI/terminal và không muốn dừng chờ phím cuối chương trình. Khi setup hoặc lệnh CLI lỗi, BAT trả exit code khác 0.
+
+### Cài thủ công
+
 Cần Node.js 22+ và pnpm 10.
 
 ```powershell
@@ -19,6 +42,8 @@ pnpm build
 ```powershell
 pnpm test:e2e
 ```
+
+Kiểm tra riêng kết nối CDP và tiện ích bằng browser thật: `pnpm test:capture` (cần Chromium do Playwright cài). Bài kiểm tra xác nhận dùng lại tab, giữ đăng nhập, không đóng tab khác, loại cookie không liên quan, xuất/nhập file và phân tích API. Không cần dùng profile cá nhân để chạy kiểm thử.
 
 Bài kiểm thử mở Chromium thật trên website localhost, ghi HAR, tạo OpenAPI, sinh và biên dịch MCP, kết nối bằng MCP SDK Client và gọi tool. Bao gồm API blog, tìm kiếm/phân trang, cookie đăng nhập, phát hiện phần tử CAPTCHA, validation và chặn write khi chưa bật. Đây là fixture CAPTCHA, không phải bài kiểm thử giải CAPTCHA thật. Các artifact được giữ lại để xem.
 
@@ -40,6 +65,25 @@ npm run build
 File `client-config.json` trong dự án sinh ra chứa đường dẫn tuyệt đối để cấu hình client MCP hỗ trợ stdio.
 
 ## Website của bạn
+
+### Dùng Chrome / Edge đang mở, giữ nguyên đăng nhập
+
+**Tiện ích đã có trong source tại `extension/`.** Xem [hướng dẫn cài tiện ích](extension/README.md). Nạp bằng Load unpacked trong `chrome://extensions` hoặc `edge://extensions`, ghi tab hiện tại rồi tải file `.web-mcp.json`. Trong `run.bat`, chọn **7** để nhập file, sau đó **3** để phân tích và **4** để tạo MCP. Mục **8** hiển thị đường dẫn thư mục và cách cài. Đây là tiện ích riêng của Studio; không cần cài thêm Playwright Extension.
+
+Hoặc kết nối trực tiếp bằng **CDP**: ở trình duyệt có hỗ trợ, mở `chrome://inspect/#remote-debugging` (Edge: `edge://inspect/#remote-debugging`) và bật cho phép gỡ lỗi phiên hiện tại. Chọn Auto/Scout trong menu rồi chọn Chrome/Edge đang mở, chấp nhận hộp thoại kết nối của trình duyệt. Phiên bản cũ không có tùy chọn này có thể dùng tiện ích ở trên hoặc một CDP endpoint đã được cấu hình.
+
+```powershell
+run.bat auto --url https://example.com --name my-site --interactive --cdp chrome
+run.bat scout --url https://example.com --name edge-site --interactive --cdp msedge
+run.bat scout --url https://example.com --name cdp-site --interactive --cdp http://127.0.0.1:9222
+run.bat import --name imported-site --file "D:\Downloads\capture.web-mcp.json"
+```
+
+CDP dùng lại tab có URL trùng chính xác; nếu chưa có sẽ mở tab mới **trong cùng phiên đã đăng nhập**. Không tự tải lại tab có sẵn để tránh mất nội dung đang nhập: hãy tải lại hoặc thao tác sau khi kết nối để có traffic mới. Kết thúc chỉ ngắt kết nối Studio, không đóng trình duyệt hoặc tab. Không dùng cùng `--storage-state`. Cookie/localStorage xuất ra chỉ thuộc website mục tiêu; header/token cho API ở origin khác cần cấu hình riêng.
+
+Recorder CDP giữ tối đa 2000 yêu cầu hoàn tất, 2 MB mỗi response và khoảng 20 MB response text; không ghi lịch sử trước lúc kết nối hoặc yêu cầu chưa hoàn tất lúc dừng. Xem cảnh báo/giới hạn trong HAR. File nhập từ extension không có screenshot.
+
+### Mở phiên trình duyệt mới
 
 ```powershell
 pnpm scout --url https://example.com --name example --interactive
