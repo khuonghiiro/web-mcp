@@ -1,0 +1,7 @@
+node_modules/
+dist/
+artifacts/
+generated-mcps/*
+!generated-mcps/.gitkeep
+.env
+*.log

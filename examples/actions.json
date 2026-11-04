@@ -1,0 +1,5 @@
+[
+  { "type": "fill", "selector": "#search", "value": "browser automation" },
+  { "type": "click", "selector": "#go" },
+  { "type": "wait", "milliseconds": 500 }
+]

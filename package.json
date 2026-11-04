@@ -1,0 +1,27 @@
+{
+  "name": "web-to-mcp-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "scout": "tsx src/cli/index.ts scout",
+    "analyze": "tsx src/cli/index.ts analyze",
+    "generate": "tsx src/cli/index.ts generate",
+    "build-mcp": "tsx src/cli/index.ts generate",
+    "auto": "tsx src/cli/index.ts auto",
+    "demo": "tsx examples/demo.ts",
+    "test:e2e": "tsx tests/e2e.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "commander": "^14.0.0",
+    "playwright": "^1.58.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "tsx": "^4.21.0", "typescript": "^5.9.0" }
+}

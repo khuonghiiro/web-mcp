@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import { once } from 'node:events';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { resolve, join } from 'node:path';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { scout } from '../src/scout/browser.js';
+import { analyze } from '../src/analyzer/specGenerator.js';
+import { generate } from '../src/generator/builder.js';
+import { readJson } from '../src/core.js';
+import { demoServer } from '../examples/site.js';
+const run = promisify(execFile);
+const server = demoServer().listen(0, '127.0.0.1');
+await once(server, 'listening');
+const address = server.address();
+assert.ok(address && typeof address !== 'string');
+const name = 'e2e-' + Date.now();
+const dir = resolve('artifacts', name);
+let client: Client | undefined;
+try {
+  await scout({ url: `http://127.0.0.1:${address.port}`, dir, duration: 500, actions: resolve('examples/actions.json'), channel: process.env.PLAYWRIGHT_CHANNEL });
+  const audit = await readJson(join(dir, 'auth.json')) as { sitekeys: unknown[] };
+  assert.equal(audit.sitekeys.length, 1);
+  const spec = await analyze(dir, name);
+  assert.equal(Object.keys(spec.paths).length, 4);
+  const output = await generate(dir, name, resolve('generated-mcps'));
+  // Compile generated code with the workspace compiler; dependencies resolve from the parent.
+  await run(process.execPath, [resolve('node_modules/typescript/bin/tsc'), '-p', join(output, 'tsconfig.json')]);
+  client = new Client({ name: 'studio-e2e', version: '1.0.0' });
+  await client.connect(new StdioClientTransport({ command: process.execPath, args: [join(output, 'dist/index.js')], env: { ...Object.fromEntries(Object.entries(process.env).filter((e): e is [string, string] => e[1] !== undefined)), MCP_AUTH_STATE: join(dir, 'auth-state.json'), MCP_ALLOW_WRITES: 'false' } }));
+  const tools = await client.listTools(); assert.equal(tools.tools.length, 4);
+  const search = await client.callTool({ name: spec.paths['/api/search'].get.operationId, arguments: { query: { q: 'verified', page: '2' } } });
+  assert.ok(!search.isError); assert.match(JSON.stringify(search), /verified/);
+  const privateResult = await client.callTool({ name: spec.paths['/api/private'].get.operationId, arguments: {} }); assert.ok(!privateResult.isError);
+  const blocked = await client.callTool({ name: spec.paths['/api/contact'].post.operationId, arguments: { body: { message: 'test' } } }); assert.equal(blocked.isError, true);
+  const invalid = await client.callTool({ name: spec.paths['/api/search'].get.operationId, arguments: { query: { page: 2 } } }); assert.equal(invalid.isError, true);
+  await client.close();
+  client = new Client({ name: 'studio-e2e-writer', version: '1.0.0' });
+  await client.connect(new StdioClientTransport({ command: process.execPath, args: [join(output, 'dist/index.js')], env: { MCP_ALLOW_WRITES: 'true' } }));
+  const written = await client.callTool({ name: spec.paths['/api/contact'].post.operationId, arguments: { body: { message: 'roundtrip', count: 3 } } });
+  assert.ok(!written.isError); assert.match(JSON.stringify(written), /roundtrip/);
+  console.log('PASS: browser → HAR → OpenAPI → compiled MCP → stdio tool calls; cookie auth, validation, write guard and CAPTCHA detection.');
+  console.log('Generated project: ' + output);
+} finally { await client?.close(); server.closeAllConnections(); await new Promise<void>(r => server.close(() => r())); }
