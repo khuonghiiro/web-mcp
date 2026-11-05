@@ -11,8 +11,11 @@ const captureSchema = z.object({
   warnings: z.array(z.string()).default([])
 });
 export async function importCapture(file: string, dir: string) {
+  return storeCapture(await readCapture(file), dir, true);
+}
+export async function readCapture(file: string) {
   if ((await stat(file)).size > 50_000_000) throw new Error('File thu thập vượt giới hạn 50 MB.');
-  return storeCapture(await readJson(file), dir, true);
+  return captureSchema.parse(await readJson(file));
 }
 export async function storeCapture(input: unknown, dir: string, create = false) {
   const data = captureSchema.parse(input);

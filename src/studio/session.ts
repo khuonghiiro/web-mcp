@@ -1,7 +1,7 @@
 import { chromium, type Browser, type Page } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { httpUrl, projectPath, writeJson, readJson, harSchema, type Entry } from '../core.js';
+import { httpUrl, writeJson, readJson, harSchema, type Entry } from '../core.js';
 import { recordPage } from '../scout/recorder.js';
 import { detectAuth } from '../scout/detector.js';
 import { filterHar } from '../analyzer/harFilter.js';
@@ -10,6 +10,8 @@ import { generate } from '../generator/builder.js';
 import { applyStep, inspectPage, extractPage, type Step, type Workflow } from '../generator/browser-runtime.js';
 import { ExtensionBridge } from '../generator/extension-bridge.js';
 import { storeCapture } from '../scout/importCapture.js';
+import { artifactPath } from '../storage/artifacts.js';
+import { siteGuide, syncSiteKnowledge } from '../knowledge/sites.js';
 
 export class StudioSession {
   bridge = new ExtensionBridge();
@@ -21,6 +23,7 @@ export class StudioSession {
   page?: Page;
   dir = '';
   name = '';
+  captureSaved = false;
   target = '';
   finishRecording?: (path: string) => Promise<void>;
   network: { method: string; origin: string; path: string; status: number }[] = [];
@@ -40,15 +43,17 @@ export class StudioSession {
       while (!this.bridge.connected && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 250));
     }
     if (endpoint === 'extension' && (!this.bridge.connected || new URL(this.bridge.tabUrl).origin !== target.origin)) throw new Error('Hãy ghép nối tiện ích trên đúng website qua studio_extension_pair trước.');
-    this.dir = projectPath(join(this.root, 'artifacts'), name);
-    await mkdir(join(this.root, 'artifacts'), { recursive: true });
+    this.dir = artifactPath(join(this.root, 'artifacts'), url, name);
+    await mkdir(join(this.dir, '..'), { recursive: true });
     await mkdir(this.dir);
+    await writeJson(join(this.dir, 'session.json'), { targetOrigin: target.origin, capturedAt: new Date().toISOString(), mode: endpoint === 'extension' ? 'extension' : 'cdp' });
     try {
       this.name = name; this.target = target.href; this.workflows = []; this.draft = undefined; this.network = [];
       this.active = true;
+      this.captureSaved = false;
       this.entries = []; this.runtimeErrors = [];
       this.extensionMode = endpoint === 'extension';
-      if (this.extensionMode) return await this.inspect();
+      if (this.extensionMode) return { ...await this.inspect(), site: await siteGuide(this.root, url), artifacts: this.dir };
       this.browser = await chromium.connectOverCDP(endpoint, { noDefaults: true, timeout: 30000 });
       const context = this.browser.contexts()[0];
       if (!context) throw new Error('Không tìm thấy phiên trình duyệt.');
@@ -62,7 +67,7 @@ export class StudioSession {
         try { const url = new URL(response.url()); this.network.push({ method: response.request().method(), origin: url.origin, path: url.pathname, status: response.status() }); } catch { /* Non-HTTP response. */ }
       });
       if (this.page.url() !== target.href) await this.page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      return await inspectPage(this.page);
+      return { ...await inspectPage(this.page), site: await siteGuide(this.root, url), artifacts: this.dir };
     } catch (error) { await this.close(); throw error; }
   }
   async inspect() { if (!this.active) throw new Error('Gọi studio_start trước.'); return this.extensionMode ? this.bridge.rpc('inspect') : inspectPage(this.current()); }
@@ -114,6 +119,7 @@ export class StudioSession {
     const origin = apiOrigin ? httpUrl(apiOrigin).origin : new URL(this.target).origin;
     if (this.extensionMode) {
       await storeCapture(await this.bridge.rpc('capture'), this.dir);
+      this.captureSaved = true;
     } else {
     const page = this.current();
     await writeJson(join(this.dir, 'auth.json'), await detectAuth(page));
@@ -137,12 +143,20 @@ export class StudioSession {
     await writeJson(join(this.dir, 'api-spec.json'), spec);
     await writeJson(join(this.dir, 'workflows.json'), this.workflows);
     const output = await generate(this.dir, this.name, join(this.root, 'generated-mcps'));
-    await this.close();
-    return { output, apiPaths: Object.keys(spec.paths).length, workflows: this.workflows.map(w => w.name), next: 'Trong thư mục output: npm install && npm run build. Nạp client-config.json vào AI client. Dùng MCP_BROWSER_CDP để chọn trình duyệt cho workflow.' };
+    const closed = await this.close();
+    return { output, site: closed.site, artifacts: this.dir, apiPaths: Object.keys(spec.paths).length, workflows: this.workflows.map(w => w.name), next: 'Trong thư mục output: npm install && npm run build. Nạp client-config.json vào AI client. Dùng MCP_BROWSER_CDP để chọn trình duyệt cho workflow.' };
   }
   async close() {
-    try { if (this.finishRecording) await this.finishRecording(join(this.dir, 'traffic.har')); }
+    let site;
+    try {
+      if (this.active && this.dir && this.extensionMode && !this.captureSaved && this.bridge.connected) {
+        await storeCapture(await this.bridge.rpc('capture'), this.dir);
+        this.captureSaved = true;
+      }
+      if (this.finishRecording) await this.finishRecording(join(this.dir, 'traffic.har'));
+      if (this.active && this.dir && this.target) site = await syncSiteKnowledge(this.root, this.dir, this.target);
+    }
     finally { this.finishRecording = undefined; await this.browser?.close(); this.browser = undefined; this.page = undefined; this.active = false; await this.bridge.close(); }
-    return { closed: true, message: 'Đã ngắt kết nối Studio; trình duyệt của bạn vẫn mở.' };
+    return { closed: true, site, artifacts: this.dir, message: 'Đã lưu dữ liệu và skill/rule website, ngắt kết nối Studio; trình duyệt vẫn mở.' };
   }
 }

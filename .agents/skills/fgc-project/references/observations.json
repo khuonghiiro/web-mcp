@@ -1,0 +1,141 @@
+{
+  "managedBy": "web-to-mcp",
+  "domain": "flow.google.com",
+  "captures": [
+    {
+      "session": "flow.google.com",
+      "evidence": "artifacts/flow.google.com",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/asb/{id}",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "_reqid",
+            "bl",
+            "f.sid",
+            "hl",
+            "rpcids",
+            "rt",
+            "source-path"
+          ],
+          "rpcIds": [
+            "UpteDb",
+            "Zzl0ze",
+            "jHPbke",
+            "mrlkwd",
+            "ngNC2"
+          ]
+        }
+      ],
+      "workflowNames": [
+        "generate_image",
+        "create_project_browser"
+      ]
+    },
+    {
+      "session": "flow-create-check-1793845500871",
+      "evidence": "artifacts/flow.google.com/flow-create-check-1793845500871",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/asb/{id}",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "_reqid",
+            "bl",
+            "f.sid",
+            "hl",
+            "rpcids",
+            "rt",
+            "source-path"
+          ],
+          "rpcIds": [
+            "UpteDb",
+            "Zzl0ze",
+            "jHPbke",
+            "mrlkwd",
+            "ngNC2"
+          ]
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "flow-generate-1793845317165",
+      "evidence": "artifacts/flow.google.com/flow-generate-1793845317165",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "_reqid",
+            "bl",
+            "f.sid",
+            "hl",
+            "rpcids",
+            "rt",
+            "source-path"
+          ],
+          "rpcIds": [
+            "DTaVef",
+            "WuwhI",
+            "ngNC2",
+            "nzlxg",
+            "ogiZ0b"
+          ]
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "flow-image-1793844976026",
+      "evidence": "artifacts/flow.google.com/flow-image-1793844976026",
+      "endpoints": [],
+      "workflowNames": []
+    },
+    {
+      "session": "flow-project-api-1793845437209",
+      "evidence": "artifacts/flow.google.com/flow-project-api-1793845437209",
+      "endpoints": [],
+      "workflowNames": []
+    },
+    {
+      "session": "flow-projects-1793844735805",
+      "evidence": "artifacts/flow.google.com/flow-projects-1793844735805",
+      "endpoints": [],
+      "workflowNames": []
+    },
+    {
+      "session": "project-page-1793844705756",
+      "evidence": "artifacts/flow.google.com/project-page-1793844705756",
+      "endpoints": [],
+      "workflowNames": []
+    }
+  ]
+}

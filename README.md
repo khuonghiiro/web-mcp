@@ -2,7 +2,7 @@
 
 CLI TypeScript biến những API quan sát được khi duyệt website thành MCP server độc lập chạy qua stdio.
 
-**Để AI tự click, nhập liệu, cuộn và khám phá website:** dùng **MCP Studio**, xem [hướng dẫn AI tự thao tác](docs/AI-WORKFLOW.md). Chạy `setup.bat`, thêm `studio-client-config.json` vào AI client, rồi yêu cầu AI dùng các tool `studio_*`. Mục **9** trong `run.bat` tạo cấu hình và hướng dẫn. Mục 1/2 là luồng thu thập thủ công, không tự chạy AI.
+**Để AI tự click, nhập liệu, cuộn và khám phá website:** dùng **MCP Studio**, xem [hướng dẫn AI tự thao tác](docs/AI-WORKFLOW.md). Chạy `setup.bat`, chọn **1 — Chuẩn bị kết nối AI** trong `run.bat`, rồi yêu cầu AI dùng các tool `studio_*`. Các bước thu thập thủ công nằm trong mục **3 — Công cụ nâng cao**.
 
 MCP website sinh ra có thể gồm API tools và browser workflow tools có tham số. Tiện ích bản 0.2.0 hỗ trợ ghép nối trực tiếp để AI điều khiển tab, bên cạnh xuất file thủ công.
 
@@ -110,7 +110,7 @@ Trong cửa sổ trình duyệt, đăng nhập, hoàn thành challenge nếu có
 
 ## Artifact và xác thực
 
-`artifacts/<name>/` chứa `traffic.har` (response nhúng trực tiếp), `dom.html`, `page.png`, `session.json`, `auth.json`, `auth-state.json`, `api-spec.json` và `analysis.json`. HAR, DOM và storage state có thể chứa thông tin đăng nhập hoặc dữ liệu cá nhân; toàn bộ thư mục được gitignore. Các file này chỉ lưu cục bộ và không được đưa vào mã MCP.
+`artifacts/<domain>/<name>/` chứa `traffic.har` (response nhúng trực tiếp), `dom.html`, `page.png`, `session.json`, `auth.json`, `auth-state.json`, `api-spec.json` và `analysis.json`. HAR, DOM và storage state có thể chứa thông tin đăng nhập hoặc dữ liệu cá nhân; toàn bộ thư mục được gitignore. Các file này chỉ lưu cục bộ và không được đưa vào mã MCP.
 
 MCP được sinh đọc biến môi trường:
 
@@ -145,3 +145,7 @@ tests/           Unit và E2E
 ```
 
 Tài liệu API tham khảo: [Playwright BrowserContext](https://playwright.dev/docs/api/class-browsercontext), [MCP TypeScript SDK v1](https://ts.sdk.modelcontextprotocol.io/).
+
+## Website knowledge
+
+Capture storage and namespaced skills: [domain routing, migration and usage](docs/WEBSITE-KNOWLEDGE.md). Studio saves update `.agents/sites.json` and the corresponding website skill/rule automatically.

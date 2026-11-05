@@ -77,6 +77,11 @@ try {
   assert.ok((await call(client, 'studio_runtime')).scripts.length > 0);
   await call(client, 'studio_workflow_save', { name: 'search', description: 'Search the fixture and return matching items.', resultSelector: '#result' });
   const result = await call(client, 'studio_finish');
+  assert.equal(result.artifacts, join(root, 'artifacts', '127.0.0.1', 'site'));
+  assert.equal(result.site.domain, '127.0.0.1');
+  const guide = await call(client, 'studio_site_guide', { url });
+  assert.equal(guide.skillName, result.site.skillName);
+  assert.match(await readFile(join(root, guide.skill), 'utf8'), /web-to-mcp:managed/);
   assert.ok(!page.isClosed());
   assert.equal(await page.evaluate(() => localStorage.getItem('auth-proof')), 'existing-session');
   assert.ok(!(await readFile(join(result.output, 'workflows.json'), 'utf8')).includes('first-agent-query'), 'Recorded input values must not enter generated workflows');
@@ -87,6 +92,7 @@ try {
   assert.match(JSON.stringify(await call(client, 'studio_extract', { selector: '#result' })), /direct-studio/);
   assert.ok((await call(client, 'studio_api_preview')).paths['/api/search']);
   await call(client, 'studio_close');
+  assert.ok(JSON.parse(await readFile(join(root, 'artifacts/127.0.0.1/cdp_site/traffic.har'), 'utf8')).log.entries.length);
   assert.ok(!page.isClosed());
   await run(process.execPath, [resolve('node_modules/typescript/bin/tsc'), '-p', join(result.output, 'tsconfig.json')]);
   generated = new Client({ name: 'generated-workflow-test', version: '1' });

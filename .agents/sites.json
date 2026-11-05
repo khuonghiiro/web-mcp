@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sites": [
+    {
+      "domain": "chatgpt.com",
+      "namespace": "cco"
+    },
+    {
+      "domain": "flow.google.com",
+      "namespace": "fgc"
+    }
+  ]
+}

@@ -1,0 +1,712 @@
+{
+  "managedBy": "web-to-mcp",
+  "domain": "chatgpt.com",
+  "captures": [
+    {
+      "session": "active-tab-1793844345468",
+      "evidence": "artifacts/chatgpt.com/active-tab-1793844345468",
+      "endpoints": [],
+      "workflowNames": []
+    },
+    {
+      "session": "chatgpt-demo-1793842183846",
+      "evidence": "artifacts/chatgpt.com/chatgpt-demo-1793842183846",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/backend-api/global/search",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/conversation/{id}",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/ces/v1/rgstr",
+          "statuses": [
+            202
+          ],
+          "queryKeys": [
+            "ec",
+            "gz",
+            "k",
+            "sid",
+            "st",
+            "sv",
+            "t"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/models",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "iim",
+            "include_icons",
+            "is_gizmo"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/settings/is_adult",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/system_hints",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "exclude_logo",
+            "mode"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/me",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/usage",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/ps/plugins/installed",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "includeExtensions",
+            "limit"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/aip/workspace/connector-recommendation",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": [
+        "search_history"
+      ]
+    },
+    {
+      "session": "chatgpt-live-1793842114687",
+      "evidence": "artifacts/chatgpt.com/chatgpt-live-1793842114687",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/ces/v1/rgstr",
+          "statuses": [
+            202
+          ],
+          "queryKeys": [
+            "ec",
+            "gz",
+            "k",
+            "sid",
+            "st",
+            "sv",
+            "t"
+          ],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "chatgpt-search-1793842135092",
+      "evidence": "artifacts/chatgpt.com/chatgpt-search-1793842135092",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/backend-api/global/search",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/conversation/{id}",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "ffd",
+      "evidence": "artifacts/chatgpt.com/ffd",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/tasks/list",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "limit",
+            "task_filter"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-api/sentinel/chat-requirements/prepare",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/cdn/assets/vi-VN.5c96ac4408.json",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/accounts/check",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/accounts/check/v4-2023-04-27",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/user_granular_consent",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/accounts/optimized/check",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/h/g/jsd/oneshot/5c2e6b612edd/{id}/jsdapi-tqhdso",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/me",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/settings/user",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/celsius/ws/user",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/models",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "iim",
+            "include_icons",
+            "is_gizmo"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/user_system_messages",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/settings/is_adult",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/system_hints",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "exclude_logo",
+            "mode"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-api/conversation/init",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/usage",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/aip/workspace/connector-recommendation",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/aip/first-party/eligibility",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/pins",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "item_type"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/college-plan/availability",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/profiles/me",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/gizmos/snorlax/sidebar",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "conversations_per_gizmo",
+            "limit",
+            "owned_only"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/ps/plugins/installed",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "includeExtensions",
+            "limit"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/ces/v1/rgstr",
+          "statuses": [
+            202
+          ],
+          "queryKeys": [
+            "ec",
+            "gz",
+            "k",
+            "sid",
+            "st",
+            "sv",
+            "t"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/amphora/notifications",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "limit"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/prompt_library/",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "limit",
+            "model_slug",
+            "supports_college_plan_starter",
+            "supports_moment_starter_actions",
+            "use_v2"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-api/sentinel/chat-requirements/finalize",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/pageConfigs/billing",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/beacons/home",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "browser_extension_installed",
+            "browser_family",
+            "browser_tab_search_available",
+            "codex_window_type",
+            "home_sms_backup_supported",
+            "pepper_home_banner_supported",
+            "product",
+            "selected_model_slug",
+            "space_tooltip_ready",
+            "web_frontend"
+          ],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "test",
+      "evidence": "artifacts/chatgpt.com/test",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/events/page-view",
+          "statuses": [
+            204
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/sentinel/chat-requirements/prepare",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/conversation/prepare",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "lightweight_authenticated"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/account-picker",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-anon/beacons/home",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "product"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/events/statsc/flush",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "lightweight_authenticated"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/events/performance",
+          "statuses": [
+            204
+          ],
+          "queryKeys": [
+            "lightweight_authenticated"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-anon/beacons/event",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/unauth-mweb/events/business",
+          "statuses": [
+            204
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": []
+    },
+    {
+      "session": "vvvv",
+      "evidence": "artifacts/chatgpt.com/vvvv",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/ces/v1/rgstr",
+          "statuses": [
+            202
+          ],
+          "queryKeys": [
+            "ec",
+            "gz",
+            "k",
+            "sid",
+            "st",
+            "sv",
+            "t"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/usage",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/wham/tasks/list",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "limit",
+            "task_filter"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/models",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "iim",
+            "include_icons",
+            "is_gizmo"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/system_hints",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [
+            "exclude_logo",
+            "mode"
+          ],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-api/sentinel/chat-requirements/prepare",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "POST",
+          "path": "/backend-api/sentinel/chat-requirements/finalize",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        },
+        {
+          "method": "GET",
+          "path": "/backend-api/celsius/ws/user",
+          "statuses": [
+            200
+          ],
+          "queryKeys": [],
+          "rpcIds": []
+        }
+      ],
+      "workflowNames": []
+    }
+  ]
+}

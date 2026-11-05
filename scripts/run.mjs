@@ -55,7 +55,7 @@ async function main() {
         console.log('Website mẫu chạy tại http://127.0.0.1:4173. Mở thêm run.bat để thu thập dữ liệu. Nhấn Ctrl+C để dừng website mẫu.');
         file = resolve(root, 'examples/demo.ts');
       } else if (choice === '6') {
-        console.log('\nHƯỚNG DẪN SỬ DỤNG\n• Chọn 1 để chạy toàn bộ quy trình, hoặc chọn 2, 3, 4 để chạy từng bước.\n• Nhập tên dự án và địa chỉ website. Nhấn Enter để dùng trình duyệt được gợi ý.\n• Trong trình duyệt, đăng nhập và thực hiện các thao tác cần thu thập.\n• Quay lại cửa sổ này, nhấn Enter để lưu và tiếp tục.\n• Dữ liệu lưu tại artifacts/<tên-dự-án>; mã MCP lưu tại generated-mcps/<tên-dự-án>.\n• Khi thu thập phiên mới, dùng tên dự án mới để tránh ghi đè.\n• Xem README.md để biết cách cài và kết nối MCP vừa tạo.');
+        console.log('\nHƯỚNG DẪN SỬ DỤNG\n• Chọn 1 để chạy toàn bộ quy trình, hoặc chọn 2, 3, 4 để chạy từng bước.\n• Nhập tên dự án và địa chỉ website. Nhấn Enter để dùng trình duyệt được gợi ý.\n• Trong trình duyệt, đăng nhập và thực hiện các thao tác cần thu thập.\n• Quay lại cửa sổ này, nhấn Enter để lưu và tiếp tục.\n• Dữ liệu lưu tại artifacts/<domain>/<tên-phiên>; mã MCP lưu tại generated-mcps/<tên-dự-án>.\n• Khi thu thập phiên mới, dùng tên dự án mới để tránh ghi đè.\n• Xem README.md để biết cách cài và kết nối MCP vừa tạo.');
         continue;
       }
       else {
@@ -64,6 +64,10 @@ async function main() {
         const name = (await rl.question('Tên dự án (chữ thường không dấu, số, dấu - hoặc _): ')).trim();
         if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) { console.error('Tên dự án cần 1–64 ký tự, bắt đầu bằng chữ thường không dấu hoặc số.'); continue; }
         parameters = [command, '--name', name];
+        if (command === 'analyze' || command === 'generate') {
+          const domain = (await rl.question('Domain website (Enter nếu tên phiên không trùng): ')).trim();
+          if (domain) parameters.push('--domain', domain);
+        }
         if (command === 'auto' || command === 'scout') {
           const url = (await rl.question('Địa chỉ website (http:// hoặc https://): ')).trim();
           try { const parsed = new URL(url); if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) throw new Error(); }

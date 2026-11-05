@@ -72,6 +72,8 @@ try {
   await assert.rejects(importCapture(captureFile, imported), /EEXIST/);
   await popup.reload();
   assert.match(await popup.locator('h1').innerText(), /Web-to-MCP/);
+  await popup.locator('summary').click();
+  assert.ok(await popup.locator('#stop').isVisible(), 'Manual export is inside advanced options');
   const [download] = await Promise.all([popup.waitForEvent('download', { timeout: 15000 }), popup.locator('#stop').click()]);
   const downloadPath = join(root, 'downloaded.web-mcp.json');
   try { await download.saveAs(downloadPath); }

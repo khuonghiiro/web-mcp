@@ -81,3 +81,7 @@ Tiện ích điều khiển tab đã ghép nối, giới hạn điều hướng 
 - **Tên dự án đã tồn tại:** dùng tên mới. Dữ liệu phiên cũ được giữ nguyên.
 
 Kiểm thử toàn luồng bằng `pnpm test:studio` (cần Chromium Playwright). Test dùng website local và client MCP thật, không dùng tài khoản cá nhân.
+
+## Website-specific skills
+
+Call `studio_site_guide` with the website URL before using existing knowledge. Read the returned local skill and rule. `studio_start` also returns the site guide; `studio_close` and `studio_finish` save to `artifacts/<hostname>/<session>/` and update namespaced knowledge. See [storage and routing](WEBSITE-KNOWLEDGE.md).

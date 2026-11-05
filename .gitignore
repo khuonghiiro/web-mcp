@@ -8,3 +8,5 @@ generated-mcps/*
 *.web-mcp.json
 studio-client-config.json
 .codex/config.toml
+.agents/.sites.lock
+.agents/sites.json.*.tmp
