@@ -1,0 +1,2208 @@
+{
+  "domain": "flow.google.com",
+  "note": "Schema inferred from capture. Required fields and semantics need verification; no captured values.",
+  "endpoints": [
+    {
+      "id": "edd83135c545",
+      "origin": "https://flow.google.com",
+      "method": "GET",
+      "path": "/asb/{id}",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "2b8f637713af",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "jHPbke",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "9427b151fa2f",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "mrlkwd",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "85eaf97ce791",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "ngNC2",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "e9d88ef704c2",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "Zzl0ze",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "6445f9493e1d",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "UpteDb",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "a6d380585de7",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "DTaVef",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "d16e4c6d8d70",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "ogiZ0b",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "tuple": [
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "integer"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "string"
+                                                },
+                                                {
+                                                  "type": "integer"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "array",
+                                          "tuple": [
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "null"
+                                        },
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "integer"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "a9ccab9aefe6",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "WuwhI",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "tuple": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "integer"
+                                                },
+                                                {
+                                                  "type": "integer"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "string"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "tuple": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "integer"
+                                                },
+                                                {
+                                                  "type": "integer"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "string"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "array",
+                                          "tuple": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "integer"
+                                                },
+                                                {
+                                                  "type": "integer"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "null"
+                                            },
+                                            {
+                                              "type": "array",
+                                              "tuple": [
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": []
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "integer"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "tuple": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "array",
+                                                      "tuple": [
+                                                        {
+                                                          "type": "string"
+                                                        },
+                                                        {
+                                                          "type": "array",
+                                                          "tuple": [
+                                                            {
+                                                              "type": "string"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "string"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "0b7b7c3dfdbb",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "nzlxg",
+      "parameters": [
+        {
+          "name": "rpcids",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "source-path",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "bl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "hl",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "_reqid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "rt",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "f.req",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "at",
+          "location": "form",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": []
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

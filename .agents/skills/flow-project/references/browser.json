@@ -1,0 +1,40 @@
+{
+  "domain": "flow.google.com",
+  "note": "Recorded sequences, not verified replay. Private selectors/URLs remain local; inspect the current page or use reviewed task guidance.",
+  "workflows": [
+    {
+      "name": "generate_image",
+      "startPath": "/",
+      "parameters": [
+        "prompt"
+      ],
+      "steps": [
+        {
+          "type": "fill",
+          "parameter": "prompt"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait"
+        }
+      ],
+      "verification": "recorded-not-replayed"
+    },
+    {
+      "name": "create_project_browser",
+      "startPath": "/",
+      "parameters": [],
+      "steps": [
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait"
+        }
+      ],
+      "verification": "recorded-not-replayed"
+    }
+  ]
+}

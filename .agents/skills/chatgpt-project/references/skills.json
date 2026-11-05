@@ -1,0 +1,27 @@
+[
+  {
+    "name": "chatgpt:auth",
+    "path": ".agents/skills/chatgpt-auth/SKILL.md",
+    "description": "Khởi tạo hoặc làm mới phiên đăng nhập chatgpt.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực."
+  },
+  {
+    "name": "chatgpt:api",
+    "path": ".agents/skills/chatgpt-api/SKILL.md",
+    "description": "Tra endpoint và schema tham số của chatgpt.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ."
+  },
+  {
+    "name": "chatgpt:browse",
+    "path": ".agents/skills/chatgpt-browse/SKILL.md",
+    "description": "Thao tác trực tiếp giao diện chatgpt.com bằng phiên đăng nhập; dùng khi người dùng yêu cầu thao tác web thay vì API."
+  },
+  {
+    "name": "chatgpt:search-history",
+    "path": ".agents/skills/chatgpt-search-history/SKILL.md",
+    "description": "Tìm hội thoại đã có trên chatgpt.com bằng giao diện tìm kiếm hoặc request đã quan sát; không gửi prompt mới vào hội thoại."
+  },
+  {
+    "name": "chatgpt:project",
+    "path": ".agents/skills/chatgpt-project/SKILL.md",
+    "description": "Chọn skill nghiệp vụ của chatgpt.com: khởi tạo phiên, API hoặc thao tác trực tiếp UI; dùng khi bắt đầu làm việc với website này."
+  }
+]

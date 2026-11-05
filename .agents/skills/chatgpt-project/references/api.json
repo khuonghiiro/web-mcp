@@ -1,0 +1,1745 @@
+{
+  "domain": "chatgpt.com",
+  "note": "Schema inferred from capture. Required fields and semantics need verification; no captured values.",
+  "endpoints": [
+    {
+      "id": "c922bbde244b",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/backend-api/global/search",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "entrypoint": {
+              "type": "string"
+            },
+            "limit": {
+              "type": "integer"
+            },
+            "query": {
+              "type": "string"
+            },
+            "source_requests": {
+              "type": "array",
+              "tuple": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "filters": {
+                      "type": "object",
+                      "properties": {
+                        "lanes": {
+                          "type": "array",
+                          "tuple": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "library_providers": {
+                          "type": "array",
+                          "tuple": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "cursor": {
+              "type": "null"
+            },
+            "query_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "6625f9e58ac7",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/conversation/{id}",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "54bcb505b7cc",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/ces/v1/rgstr",
+      "parameters": [
+        {
+          "name": "k",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "st",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "sv",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "t",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "sid",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "ec",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "gz",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        202
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "id": "bbfdb47f4d18",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/models",
+      "parameters": [
+        {
+          "name": "iim",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "include_icons",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "is_gizmo",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "6ff0136c3f34",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/settings/is_adult",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "3ecfeb7001a9",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/system_hints",
+      "parameters": [
+        {
+          "name": "exclude_logo",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "mode",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "4720bb4747c2",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/me",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "c5c7310920d1",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/wham/usage",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "63dd0c20b2ee",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/ps/plugins/installed",
+      "parameters": [
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "includeExtensions",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "9b41e76611cd",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/aip/workspace/connector-recommendation",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "4489b13a7b0f",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/wham/tasks/list",
+      "parameters": [
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "task_filter",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "3481876626c4",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/backend-api/sentinel/chat-requirements/prepare",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "p": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "e179f6bc8a1f",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "f0d500c8bd63",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/cdn/assets/vi-VN.5c96ac4408.json",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "6faca681762d",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/wham/accounts/check",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "d3c9fd06c445",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/accounts/check/v4-2023-04-27",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "e9b00e5431bd",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/user_granular_consent",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "eeaca26fdb55",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/accounts/optimized/check",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "48898cdb1259",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/cdn-cgi/challenge-platform/h/g/jsd/oneshot/5c2e6b612edd/{id}/jsdapi-tqhdso",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "text/plain",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "id": "7e70b7bcc9c6",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/settings/user",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "9fc5bd7d4d81",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/celsius/ws/user",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "6410eac3335b",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/user_system_messages",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "1a119572818f",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/backend-api/conversation/init",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "conversation_id": {
+              "type": "null"
+            },
+            "conversation_origin": {
+              "type": "null"
+            },
+            "gizmo_id": {
+              "type": "null"
+            },
+            "requested_default_model": {
+              "type": "null"
+            },
+            "system_hints": {
+              "type": "null"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "timezone_offset_min": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "30f58fb78d3a",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/aip/first-party/eligibility",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "7fe913689b80",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/pins",
+      "parameters": [
+        {
+          "name": "item_type",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "5046530c1b80",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/college-plan/availability",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "dae1b1980022",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/profiles/me",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "dd7d90872ab0",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/gizmos/snorlax/sidebar",
+      "parameters": [
+        {
+          "name": "conversations_per_gizmo",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "owned_only",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "d4a096fe4a95",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/amphora/notifications",
+      "parameters": [
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "ee3aee45557c",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/prompt_library/",
+      "parameters": [
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "use_v2",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "model_slug",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "supports_college_plan_starter",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "supports_moment_starter_actions",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "25f795c07051",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/backend-api/sentinel/chat-requirements/finalize",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "prepare_token": {
+              "type": "local-credential"
+            },
+            "proofofwork": {
+              "type": "string"
+            },
+            "turnstile": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "eab9010b0555",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/pageConfigs/billing",
+      "parameters": [
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "0cf62cc5c0e7",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-api/beacons/home",
+      "parameters": [
+        {
+          "name": "product",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "selected_model_slug",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "web_frontend",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "codex_window_type",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "home_sms_backup_supported",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "pepper_home_banner_supported",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "browser_family",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "browser_extension_installed",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "browser_tab_search_available",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "space_tooltip_ready",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "authorization",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "eb6199ca128f",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/events/page-view",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        204
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "anonymousId": {
+              "type": "string"
+            },
+            "isDocumentEntry": {
+              "type": "boolean"
+            },
+            "occurredAt": {
+              "type": "string"
+            },
+            "referrer": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "appEntryInstanceId": {
+              "type": "string"
+            },
+            "entryContext": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "integer"
+                },
+                "capturedAt": {
+                  "type": "string"
+                },
+                "webSurface": {
+                  "type": "string"
+                },
+                "pathname": {
+                  "type": "string"
+                },
+                "clickIdParameterNames": {
+                  "type": "array",
+                  "tuple": []
+                }
+              }
+            },
+            "entryUrl": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "2fe8af25ecaa",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/sentinel/chat-requirements/prepare",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "p": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "d1168123dcde",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/conversation/prepare",
+      "parameters": [
+        {
+          "name": "lightweight_authenticated",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "conversationRetryOwner",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "conversationState",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "clientContextualInfo",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "timezone",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "timezoneOffsetMinutes",
+          "location": "form",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "conversationRetryOwner": {
+              "type": "string"
+            },
+            "conversationState": {
+              "type": "string"
+            },
+            "clientContextualInfo": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "timezoneOffsetMinutes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "9e6ee75a31f9",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/api/auth/account-picker",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "7cb835949455",
+      "origin": "https://chatgpt.com",
+      "method": "GET",
+      "path": "/backend-anon/beacons/home",
+      "parameters": [
+        {
+          "name": "product",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only"
+    },
+    {
+      "id": "dd2b7c182a2f",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/events/statsc/flush",
+      "parameters": [
+        {
+          "name": "lightweight_authenticated",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "text/plain",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "id": "1c6fd7bb78df",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/events/performance",
+      "parameters": [
+        {
+          "name": "lightweight_authenticated",
+          "location": "query",
+          "type": "string",
+          "localOnly": false,
+          "required": "unknown"
+        },
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        204
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "array",
+          "tuple": [
+            {
+              "type": "object",
+              "properties": {
+                "durationMs": {
+                  "type": "integer"
+                },
+                "longTaskDurationMs": {
+                  "type": "integer"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "anonymousId": {
+                  "type": "string"
+                },
+                "occurredAt": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cacheDurationMs": {
+                  "type": "number"
+                },
+                "connectionDurationMs": {
+                  "type": "number"
+                },
+                "dnsDurationMs": {
+                  "type": "number"
+                },
+                "documentCfRay": {
+                  "type": "string"
+                },
+                "documentRequestId": {
+                  "type": "string"
+                },
+                "navigationType": {
+                  "type": "string"
+                },
+                "redirectDurationMs": {
+                  "type": "integer"
+                },
+                "requestDurationMs": {
+                  "type": "number"
+                },
+                "serverCfRttDurationMs": {
+                  "type": "integer"
+                },
+                "serverEdgeDurationMs": {
+                  "type": "integer"
+                },
+                "serverStatsigAuthDurationMs": {
+                  "type": "integer"
+                },
+                "serverStatsigInitDurationMs": {
+                  "type": "integer"
+                },
+                "serverStatsigRouteDurationMs": {
+                  "type": "integer"
+                },
+                "serviceWorkerControlled": {
+                  "type": "boolean"
+                },
+                "tlsDurationMs": {
+                  "type": "number"
+                },
+                "transportProtocol": {
+                  "type": "string"
+                },
+                "ttfbMs": {
+                  "type": "number"
+                },
+                "waitingDurationMs": {
+                  "type": "number"
+                },
+                "kind": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "70d5ae4450f3",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/backend-anon/beacons/event",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "beacon_id": {
+              "type": "string"
+            },
+            "event_type": {
+              "type": "string"
+            },
+            "message_id": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ecbac9c61a44",
+      "origin": "https://chatgpt.com",
+      "method": "POST",
+      "path": "/unauth-mweb/events/business",
+      "parameters": [
+        {
+          "name": "cookie",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        },
+        {
+          "name": "oai-session-id",
+          "location": "header",
+          "type": "string",
+          "localOnly": true,
+          "required": "unknown"
+        }
+      ],
+      "statuses": [
+        204
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "anonymousId": {
+              "type": "string"
+            },
+            "events": {
+              "type": "array",
+              "tuple": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "beaconId": {
+                      "type": "string"
+                    },
+                    "beaconName": {
+                      "type": "string"
+                    },
+                    "placement": {
+                      "type": "string"
+                    },
+                    "beaconType": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "occurredAt": {
+                      "type": "string"
+                    },
+                    "uiTreatment": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

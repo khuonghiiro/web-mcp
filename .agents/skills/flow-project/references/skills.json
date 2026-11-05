@@ -1,0 +1,37 @@
+[
+  {
+    "name": "flow:auth",
+    "path": ".agents/skills/flow-auth/SKILL.md",
+    "description": "Khởi tạo hoặc làm mới phiên đăng nhập flow.google.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực."
+  },
+  {
+    "name": "flow:api",
+    "path": ".agents/skills/flow-api/SKILL.md",
+    "description": "Tra endpoint và schema tham số của flow.google.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ."
+  },
+  {
+    "name": "flow:browse",
+    "path": ".agents/skills/flow-browse/SKILL.md",
+    "description": "Thao tác trực tiếp giao diện flow.google.com bằng phiên đăng nhập; dùng khi người dùng yêu cầu thao tác web thay vì API."
+  },
+  {
+    "name": "flow:list-projects",
+    "path": ".agents/skills/flow-list-projects/SKILL.md",
+    "description": "Liệt kê và tìm dự án trên flow.google.com bằng API hoặc UI; dùng khi cần chọn dự án trước thao tác tiếp theo."
+  },
+  {
+    "name": "flow:create-project",
+    "path": ".agents/skills/flow-create-project/SKILL.md",
+    "description": "Tạo dự án mới trên flow.google.com bằng API hoặc nút Dự án mới; dùng khi người dùng yêu cầu tạo dự án."
+  },
+  {
+    "name": "flow:generate-image",
+    "path": ".agents/skills/flow-generate-image/SKILL.md",
+    "description": "Nhập prompt và tạo ảnh trên flow.google.com; hỗ trợ thao tác UI đã quan sát, giải thích RPC ảnh và giới hạn xác minh của API."
+  },
+  {
+    "name": "flow:project",
+    "path": ".agents/skills/flow-project/SKILL.md",
+    "description": "Chọn skill nghiệp vụ của flow.google.com: khởi tạo phiên, API hoặc thao tác trực tiếp UI; dùng khi bắt đầu làm việc với website này."
+  }
+]

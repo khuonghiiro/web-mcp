@@ -3,11 +3,13 @@
   "sites": [
     {
       "domain": "chatgpt.com",
-      "namespace": "cco"
+      "namespace": "chatgpt",
+      "scheme": "website"
     },
     {
       "domain": "flow.google.com",
-      "namespace": "fgc"
+      "namespace": "flow",
+      "scheme": "website"
     }
   ]
 }

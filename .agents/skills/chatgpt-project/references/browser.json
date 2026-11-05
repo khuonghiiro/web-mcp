@@ -1,0 +1,26 @@
+{
+  "domain": "chatgpt.com",
+  "note": "Recorded sequences, not verified replay. Private selectors/URLs remain local; inspect the current page or use reviewed task guidance.",
+  "workflows": [
+    {
+      "name": "search_history",
+      "startPath": "/",
+      "parameters": [
+        "query"
+      ],
+      "steps": [
+        {
+          "type": "click"
+        },
+        {
+          "type": "fill",
+          "parameter": "query"
+        },
+        {
+          "type": "wait"
+        }
+      ],
+      "verification": "recorded-not-replayed"
+    }
+  ]
+}

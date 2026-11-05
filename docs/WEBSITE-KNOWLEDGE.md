@@ -5,12 +5,21 @@ Studio và CLI lưu capture mới tại `artifacts/<hostname>/<tên-phiên>/`. V
 Sau khi lưu qua `studio_close`, `studio_finish`, CLI `scout`, `auto` hoặc `import`, bộ sinh cập nhật:
 
 - `.agents/sites.json`: ánh xạ hostname → namespace cố định.
-- `.agents/skills/fgc-project/SKILL.md`: `name: fgc:fix` cho `flow.google.com`.
-- `.agents/rules/sites/fgc.md`: phạm vi và quy tắc của website.
-- `references/observations.json`: endpoint, mã trạng thái, RPC ID và tên workflow quan sát ở từng phiên; không chứa body hoặc giá trị xác thực.
+- `.agents/skills/flow-project/SKILL.md`: `name: flow:project`, định tuyến vào bộ skill theo chức năng.
+- `.agents/skills/flow-auth/`, `flow-api/`, `flow-browse/`: khởi tạo phiên trên máy mới, đọc contract API, hoặc thao tác UI.
+- `.agents/skills/flow-list-projects/`, `flow-create-project/`, `flow-generate-image/`: skill nghiệp vụ đã có mô tả API và UI được rà soát.
+- `.agents/rules/sites/flow.md`: phạm vi và quy tắc của website.
+- `flow-project/references/api.json`: origin, method, endpoint, RPC ID, query/header/form parameter và schema body; không chứa giá trị payload hay xác thực. `tuple` giữ vị trí array, `decodedJson` thể hiện JSON nằm trong string. Trường bắt buộc chưa xác minh được ghi `unknown`.
+- `references/browser.json`: các chuỗi UI đã ghi và tên parameter. Selector/raw URL riêng tư không tự đưa vào Git; task được rà soát mô tả control và cách inspect lại.
+- `references/tasks.json`: mô tả nghiệp vụ do AI/người dùng đối chiếu bằng chứng: inputs, RPC/endpoint IDs, nhánh API, nhánh browser, tiêu chí thành công và trạng thái kiểm chứng. Bộ sinh không ghi đè file này.
+- `references/skills.json`: danh sách tên skill và đường dẫn; `observations.json` giữ schema/bằng chứng theo từng phiên.
 - `references/notes.md`: ghi chú do người/AI kiểm chứng, không bị bộ sinh ghi đè.
 
-Domain từ ba phần lấy chữ đầu mỗi phần (`flow.google.com` → `fgc`). Domain hai phần lấy chữ đầu tên và tối đa hai chữ đầu đuôi (`claude.ai` → `cai`). Nếu trùng namespace hoặc thư mục đã có, thêm hậu tố hash ổn định. Không chọn ngẫu nhiên lại mỗi lần cào. Subdomain là website riêng.
+Namespace dùng nhãn đầu tiên khác `www`: `flow.google.com` → `flow`, `claude.ai` → `claude`, `chatgpt.com` → `chatgpt`. Nếu trùng namespace hoặc thư mục có sẵn, thêm hậu tố hash ổn định; hostname đầy đủ vẫn là khóa định tuyến. Registry cũ dùng chữ viết tắt được chuyển khi cập nhật knowledge, giữ ghi chú thủ công; không giữ skill `*:fix` giả làm chức năng website.
+
+Máy mới chỉ có source và skill, không có session. AI bắt đầu với `<namespace>:auth`: setup → cấu hình MCP Studio → cài extension → mở đúng website → người dùng đăng nhập → bật tự kết nối → inspect và ghi request mới. UI dùng trực tiếp tab đã đăng nhập. API dùng cookie/header/form token hiện hành trong artifacts local; runtime MCP hỗ trợ `MCP_AUTH_STATE` và `MCP_AUTH_HEADERS_FILE`, nhưng không tự suy luận CSRF/body/RPC. Hết phiên thì làm mới, không đưa credential vào skill.
+
+Bộ sinh tạo contract tham số từ capture và skill cho workflow được ghi. Nó **không có LLM tự hiểu nghiệp vụ**: AI đang làm việc phải kiểm chứng tên field/tuple, selector, kết quả rồi ghi `tasks.json`. Các task được rà soát sẽ thay skill workflow tổng quát tương ứng. Nếu người dùng muốn UI, theo nhánh browser của task, không buộc gọi API.
 
 `AGENTS.md` hướng dẫn AI tra đúng hostname trước khi dùng skill; `studio_site_guide` trả đường dẫn cần đọc. Tool `studio_start` cũng trả site guide. AI có thể đọc skill vừa sinh ngay; danh sách skill tích hợp của một số client chỉ cập nhật khi mở lại phiên. Namespace YAML không tự tạo thêm một MCP tool cùng tên.
 

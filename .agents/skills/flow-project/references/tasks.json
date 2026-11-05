@@ -1,0 +1,37 @@
+[
+  {
+    "id": "list-projects",
+    "title": "Liệt kê dự án Flow",
+    "description": "Liệt kê và tìm dự án trên flow.google.com bằng API hoặc UI; dùng khi cần chọn dự án trước thao tác tiếp theo.",
+    "inputs": {"filter": "Từ khóa tên dự án nếu người dùng yêu cầu; lọc kết quả đã đọc, chưa xác minh tham số lọc phía server."},
+    "rpcIds": ["UpteDb"],
+    "api": ["POST endpoint batchexecute với query rpcids=UpteDb. Xem query/form/body schema theo RPC trong api.json; các trường at, f.sid và cookie lấy từ phiên local mới.", "f.req là chuỗi JSON; envelope[0][0][0] là RPC ID và envelope[0][0][1] là chuỗi JSON args. Không gán ý nghĩa cho các phần tử args chưa kiểm chứng; lấy mẫu cấu trúc hiện hành khi mở danh sách trên UI.", "Response có thể có prefix chống XSSI và khung nhiều dòng. Đọc các dòng JSON chứa wrb.fr, tìm phần tử có RPC ID UpteDb rồi JSON.parse payload string. Không coi HTTP 200 là đủ.", "Chưa xác minh contract phân trang. Nếu kết quả chưa đủ, dùng UI cuộn danh sách để quan sát request trang tiếp theo trước khi tuyên bố đã lấy toàn bộ."],
+    "browser": ["Đi tới https://flow.google.com/ và inspect; nếu ở trang đăng nhập thì thực hiện flow:auth.", "Đọc các card/link dự án hiện có, lấy tên và href bằng studio_extract với selector vừa quan sát. Không click Dự án mới khi chỉ yêu cầu liệt kê.", "Nếu danh sách tải dần, cuộn từng đợt và gộp theo ID/link; dừng khi không còn dự án mới hoặc đã đủ phạm vi yêu cầu.", "Muốn mở dự án: chọn đúng tên/ID người dùng chỉ định từ danh sách; inspect lại sau khi click."],
+    "success": ["Trả danh sách tên và link dự án cùng phạm vi đã đọc; không tiết lộ cookie/token.", "Phân biệt danh sách rỗng hợp lệ với lỗi xác thực hoặc UI chưa tải."],
+    "verification": "RPC danh sách và UI đã quan sát; contract phân trang chưa kiểm chứng."
+  },
+  {
+    "id": "create-project",
+    "title": "Tạo dự án Flow",
+    "description": "Tạo dự án mới trên flow.google.com bằng API hoặc nút Dự án mới; dùng khi người dùng yêu cầu tạo dự án.",
+    "inputs": {"name": "Tên dự án mong muốn. API đã xác minh vị trí args[1][1][0]; UI có thể tạo với tên mặc định."},
+    "rpcIds": ["jHPbke", "UpteDb"],
+    "workflowNames": ["create_project_browser"],
+    "api": ["Endpoint POST /_/AiSandboxAngularFrontend/data/batchexecute, query rpcids=jHPbke, form application/x-www-form-urlencoded gồm f.req và at theo capture hiện hành. Cookie, at, f.sid và cấu hình runtime chỉ lấy local.", "Giải mã form.f.req thành envelope; JSON.parse(envelope[0][0][1]) thành args; thay args[1][1][0] bằng name; JSON.stringify args trở lại envelope[0][0][1], rồi stringify envelope và URL-encode form. Các trường chưa biết giữ theo request hiện hành, không hardcode từ máy khác.", "Đọc frame wrb.fr của jHPbke rồi JSON.parse phần payload; lần thử thành công trả project ID ở data[0], tên ở data[1][0]. Kiểm tra kiểu dữ liệu trước khi dùng vì contract có thể thay đổi.", "Gọi flow:list-projects để xác minh ID mới có trong danh sách. Nếu timeout hoặc response mơ hồ, kiểm tra danh sách trước khi tạo lại để tránh trùng dự án."],
+    "browser": ["Từ trang danh sách, inspect tìm nút Dự án mới. Selector từng ghi: button[aria-label='addDự án mới']; chỉ dùng nếu còn khớp đúng nút hiện hành.", "Click một lần và chờ URL/DOM của trang dự án; inspect lại. Không dựa vào wait body để khẳng định đã tạo thành công.", "Nếu UI dùng tên mặc định, chỉ đổi tên khi tìm được control phù hợp và xác minh bước đó; không giả định click Dự án mới đã dùng name.", "Lấy project URL và tên hiển thị; xác minh lại trong danh sách nếu cần."],
+    "success": ["Có project ID/URL mới và được xác nhận trên UI hoặc RPC danh sách.", "Báo rõ tên thực tế; không khẳng định đổi tên UI thành công nếu chưa kiểm chứng."],
+    "verification": "API tạo dự án đã chạy thành công và kiểm tra bằng RPC danh sách; thao tác UI Dự án mới đã quan sát."
+  },
+  {
+    "id": "generate-image",
+    "title": "Tạo ảnh trong dự án Flow",
+    "description": "Nhập prompt và tạo ảnh trên flow.google.com; hỗ trợ thao tác UI đã quan sát, giải thích RPC ảnh và giới hạn xác minh của API.",
+    "inputs": {"project": "Dự án người dùng chọn; nếu chưa có thì dùng flow:list-projects hoặc flow:create-project khi được yêu cầu.", "prompt": "Nội dung ảnh do người dùng yêu cầu; vị trí quan sát trong payload RPC: args[1][0][8][0][0][0].", "options": "Model, số ảnh và tỉ lệ nếu người dùng chỉ định. Đọc lựa chọn hiện hành trên UI; chưa xác minh đầy đủ ánh xạ API."},
+    "rpcIds": ["ogiZ0b"],
+    "workflowNames": ["generate_image"],
+    "api": ["POST batchexecute với rpcids=ogiZ0b. Xem schema form f.req/at và tuple JSON trong api.json; payload args là JSON nằm ở envelope[0][0][1]. Vị trí prompt nêu trên đã đối chiếu kiểu string trong capture.", "Các UUID, seed, model/config và context khác phải lấy từ thao tác hiện hành; chưa đủ bằng chứng gán tên cho mọi vị trí tuple. Không gửi ID của tài khoản đã cào trước.", "API ảnh độc lập chưa được xác nhận dùng được: thử thiếu dữ liệu xác minh trả HTTP 200 nhưng lỗi RPC 7 PUBLIC_ERROR_UNUSUAL_ACTIVITY. Không tự tạo/giả token, không xem token dài là cấu hình cố định.", "Nếu người dùng muốn API, ghi một lần tạo hợp lệ qua website rồi đối chiếu request/response. Khi còn phụ thuộc xác minh website, báo giới hạn và dùng UI nếu phù hợp yêu cầu."],
+    "browser": ["Mở đúng dự án và inspect, chọn chế độ ảnh thay vì video khi UI có lựa chọn. Không bắt đầu nhập prompt ở trang danh sách.", "Tìm trình soạn thảo contenteditable trong flow-rich-text-editor bằng studio_inspect. Dùng selector được trả về và studio_fill với parameter=prompt; kiểm tra nội dung đã nhập. Không dùng textarea giả định.", "Chọn model/tỉ lệ/số ảnh từ các control quan sát được theo yêu cầu, sau đó tìm nút bắt đầu tạo. Selector từng ghi: button[aria-label='Bắt đầu tạo']; kiểm tra lại ngôn ngữ và trạng thái enabled.", "Click gửi một lần, theo dõi tiến trình và lỗi bằng inspect. Nếu yêu cầu xác minh, để người dùng hoàn thành trên website rồi kiểm tra lại trạng thái; không bấm tạo liên tục.", "Chờ card ảnh hoàn tất; đọc kết quả thực tế và link nếu có. Selector img[alt*='generated'], div.image-result trong bản ghi cũ chưa được chứng minh ổn định, không dùng làm điều kiện thành công duy nhất."],
+    "success": ["UI hiển thị ảnh hoàn tất trong đúng dự án, không còn pending hoặc lỗi.", "Đối chiếu số ảnh/kích thước nếu UI cung cấp. HTTP 200 hoặc một ảnh thumbnail cũ không chứng minh tạo ảnh mới thành công."],
+    "verification": "Tạo qua UI từng thành công 1 ảnh 1024×1024; API độc lập thiếu xác minh thất bại. Workflow selector cần inspect lại trước khi replay."
+  }
+]
