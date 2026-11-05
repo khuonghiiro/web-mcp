@@ -52,6 +52,8 @@ try {
     Invoke-Pnpm check
     Write-Host '[4/4] Building project...'
     Invoke-Pnpm build
+    & node.exe scripts/client-config.mjs
+    if ($LASTEXITCODE -ne 0) { throw 'Không tạo được cấu hình MCP Studio.' }
     Write-Host 'Setup complete. Open run.bat to start.' -ForegroundColor Green
     exit 0
 } catch {

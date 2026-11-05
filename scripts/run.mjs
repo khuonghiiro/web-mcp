@@ -28,16 +28,23 @@ async function main() {
   if (!existsSync(resolve(root, 'node_modules/tsx/package.json'))) throw new Error('Chưa cài đủ thư viện. Vui lòng chạy setup.bat.');
   const args = process.argv.slice(2);
   if (args.length) return execute(cli, args);
+  let advanced = false;
   while (true) {
-    console.log('\n=== Web-to-MCP Studio ===\n1. Tự động: thu thập → phân tích → tạo MCP\n2. Thu thập dữ liệu website\n3. Phân tích dữ liệu đã thu thập\n4. Tạo MCP từ dữ liệu đã phân tích\n5. Chạy website mẫu\n6. Xem hướng dẫn sử dụng\n7. Nhập dữ liệu từ tiện ích trình duyệt\n8. Hướng dẫn cài tiện ích Chrome / Edge\n0. Thoát');
+    if (!advanced) console.log('\n=== AI ĐIỀU KHIỂN WEBSITE ===\n1. Chuẩn bị kết nối AI (khuyên dùng)\n2. Cài / cập nhật extension\n3. Công cụ thu thập thủ công và nâng cao\n0. Thoát\n\nDùng hằng ngày: mở AI client → bật Tự kết nối AI trong extension trên tab cần dùng → yêu cầu AI thao tác. Không cần giữ run.bat mở.');
+    if (advanced) console.log('\n=== Web-to-MCP Studio ===\n9. Kết nối AI tự điều khiển web (MCP Studio)\n1. Pipeline thu thập thủ công → phân tích → tạo MCP\n2. Thu thập dữ liệu (bạn tự thao tác)\n3. Phân tích dữ liệu đã thu thập\n4. Tạo MCP từ dữ liệu đã phân tích\n5. Chạy website mẫu\n6. Xem hướng dẫn sử dụng\n7. Nhập dữ liệu từ tiện ích trình duyệt\n8. Hướng dẫn cài tiện ích Chrome / Edge\n0. Thoát');
     const rl = createInterface({ input: process.stdin, output: process.stdout });
     let file = cli;
     let parameters = [];
     try {
-      const choice = (await rl.question('Chọn chức năng [0-8]: ')).trim();
+      let choice = (await rl.question(advanced ? 'Chọn chức năng [0-9], Enter = quay lại: ' : 'Chọn [1-3], Enter = chuẩn bị AI: ')).trim();
+      if (advanced && !choice) { advanced = false; continue; }
+      if (!advanced) { if (choice === '3') { advanced = true; continue; } choice = ({ '': '9', '1': '9', '2': '8', '0': '0' })[choice] ?? 'invalid'; }
       if (choice === '0') return 0;
-      if (choice === '8') {
-        console.log(`\nTIỆN ÍCH ĐÃ CÓ TRONG SOURCE\nThư mục: ${resolve(root, 'extension')}\n1. Mở chrome://extensions hoặc edge://extensions.\n2. Bật Chế độ dành cho nhà phát triển (Developer mode).\n3. Chọn Tải tiện ích đã giải nén (Load unpacked), chọn đúng thư mục extension ở trên.\n4. Mở tab đã đăng nhập, bấm tiện ích → Bắt đầu ghi tab này.\n5. Tải lại trang / thao tác, rồi bấm Dừng và tải file dữ liệu.\n6. Chọn mục 7 tại đây để nhập file, rồi mục 3 và 4.\nKhông cần bật gỡ lỗi từ xa khi dùng tiện ích. Xem extension/README.md.`);
+      if (choice === '9') {
+        console.log('\nCHỈ CẦN THIẾT LẬP MỘT LẦN\n1. Mở project này trong Codex; tải lại MCP sau khi cập nhật. Client khác dùng studio-client-config.json.\n2. Cài hoặc Reload extension từ thư mục extension.\n3. Trên tab website cần dùng, bật Tự kết nối AI với tab này.\n4. Nhờ AI: Dùng Studio thao tác website này, endpoint extension; đọc trang, tìm kiếm và lấy dữ liệu.\nTiện ích sẽ tự chờ MCP và kết nối, không phải dán mã. MCP do AI client khởi chạy; run.bat chỉ chuẩn bị cấu hình. Có thể đóng cửa sổ này.');
+        file = resolve(root, 'scripts/client-config.mjs');
+      } else if (choice === '8') {
+        console.log(`\nTIỆN ÍCH ĐÃ CÓ TRONG SOURCE\nThư mục: ${resolve(root, 'extension')}\n1. Mở chrome://extensions hoặc edge://extensions.\n2. Bật Chế độ dành cho nhà phát triển (Developer mode).\n3. Chọn Tải tiện ích đã giải nén (Load unpacked), chọn đúng thư mục extension ở trên.\n4. Mở tab đã đăng nhập, bật Tự kết nối AI với tab này trong tiện ích.\n5. Mở MCP Studio trong AI client, rồi yêu cầu AI thao tác website.\nThu thập thủ công chỉ là tùy chọn nâng cao.\nKhông cần bật gỡ lỗi từ xa khi dùng tiện ích. Xem extension/README.md.`);
         continue;
       } else if (choice === '7') {
         const name = (await rl.question('Tên dự án mới (chữ thường không dấu, số, - hoặc _): ')).trim();
@@ -53,7 +60,7 @@ async function main() {
       }
       else {
         const command = { 1: 'auto', 2: 'scout', 3: 'analyze', 4: 'generate' }[choice];
-        if (!command) { console.error('Vui lòng chọn một số từ 0 đến 8.'); continue; }
+        if (!command) { console.error('Vui lòng chọn một số từ 0 đến 9.'); continue; }
         const name = (await rl.question('Tên dự án (chữ thường không dấu, số, dấu - hoặc _): ')).trim();
         if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) { console.error('Tên dự án cần 1–64 ký tự, bắt đầu bằng chữ thường không dấu hoặc số.'); continue; }
         parameters = [command, '--name', name];

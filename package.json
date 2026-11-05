@@ -16,7 +16,10 @@
     "auto": "tsx src/cli/index.ts auto",
     "demo": "tsx examples/demo.ts",
     "test:e2e": "tsx tests/e2e.ts",
-    "test:capture": "tsx tests/capture-e2e.ts"
+    "test:capture": "tsx tests/capture-e2e.ts",
+    "studio": "tsx src/studio/index.ts",
+    "studio:config": "node scripts/client-config.mjs",
+    "test:studio": "tsx tests/studio-e2e.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",

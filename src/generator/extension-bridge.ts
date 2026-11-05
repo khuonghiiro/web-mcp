@@ -12,11 +12,25 @@ export class ExtensionBridge {
   private pairingUrl = '';
   tabUrl = '';
   get connected() { return !!this.tabUrl && Date.now() - this.lastSeen < 45000; }
-  async start() {
+  async start(autoDiscover = false) {
     if (this.server) return { pairingUrl: this.pairingUrl, connected: this.connected, tabUrl: this.tabUrl };
     this.server = createServer((req, res) => {
       const auth = req.headers.authorization?.replace(/^Bearer /, '') ?? '';
       const origin = req.headers.origin;
+      // Extension fetch has host permission; websites cannot supply this custom
+      // header without a preflight, which this server never authorizes.
+      if (autoDiscover && req.method === 'GET' && req.url === '/pairing') {
+        const extension = req.headers['x-studio-extension'];
+        if (typeof extension !== 'string' || !/^[a-p]{32}$/.test(extension) ||
+            (origin && origin !== `chrome-extension://${extension}`) ||
+            req.headers.host !== '127.0.0.1:43119') {
+          res.writeHead(403).end(); return;
+        }
+        if (this.connected) { res.writeHead(409).end(); return; }
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
+          .end(JSON.stringify({ pairingUrl: this.pairingUrl }));
+        return;
+      }
       if ((origin && !/^chrome-extension:\/\/[a-p]{32}$/.test(origin)) || !/^[a-f0-9]{64}$/.test(auth) || !timingSafeEqual(Buffer.from(auth), Buffer.from(this.token))) {
         res.writeHead(403).end(); return;
       }
@@ -46,12 +60,25 @@ export class ExtensionBridge {
             const pending = this.pending.get(body.id);
             if (pending) { clearTimeout(pending.timer); this.pending.delete(body.id); body.ok ? pending.resolve(body.result) : pending.reject(new Error(String(body.error))); }
             this.lastSeen = Date.now();
-          } else { this.tabUrl = ''; this.lastSeen = 0; this.failPending(); }
+          } else {
+            this.tabUrl = ''; this.lastSeen = 0; this.failPending();
+            this.poll?.end(JSON.stringify({ type: 'disconnect' })); this.poll = undefined;
+          }
           send({ ok: true });
         } catch { send({ error: 'Dữ liệu không hợp lệ' }, 400); }
       });
     });
-    await new Promise<void>((resolve, reject) => { this.server!.once('error', reject); this.server!.listen(0, '127.0.0.1', resolve); });
+    const listen = (port: number) => new Promise<void>((resolve, reject) => {
+      const onError = (error: Error) => { this.server!.removeListener('listening', onListen); reject(error); };
+      const onListen = () => { this.server!.removeListener('error', onError); resolve(); };
+      this.server!.once('error', onError).once('listening', onListen).listen(port, '127.0.0.1');
+    });
+    try { await listen(autoDiscover ? 43119 : 0); }
+    catch (error) {
+      if (!autoDiscover || (error as NodeJS.ErrnoException).code !== 'EADDRINUSE') { this.server = undefined; throw error; }
+      autoDiscover = false;
+      await listen(0); // Another Studio owns discovery; manual pairing stays available.
+    }
     const address = this.server.address();
     if (!address || typeof address === 'string') throw new Error('Không mở được cầu nối.');
     this.pairingUrl = `http://127.0.0.1:${address.port}/#${this.token}`;

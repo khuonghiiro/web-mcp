@@ -2,6 +2,14 @@
 
 Tiện ích riêng của project, không phải Playwright Extension trên Chrome Web Store. Toàn bộ source có trong thư mục này; không cần npm install hoặc build extension.
 
+## Để AI tự thao tác (bản 0.2.0)
+
+**Cách dùng hằng ngày:** trên tab muốn điều khiển, bật **Tự kết nối AI với tab này**. Tiện ích ghi nhớ tab trong phiên trình duyệt và thử tìm MCP mỗi 30 giây. Sau đó chỉ cần yêu cầu AI dùng Studio với `endpoint: "extension"`; không phải mở `run.bat` hay dán mã. Đóng tab/trình duyệt hoặc bấm Ngắt kết nối sẽ tắt tự động. Chuyển sang website khác cần chọn lại tab. Nút Kết nối AI bên dưới vẫn dùng được cho kết nối một lần.
+
+Sau khi cập nhật source, **Reload** tiện ích. Chạy `setup.bat`, thêm cấu hình `studio-client-config.json` vào AI client hỗ trợ MCP. Bật MCP Studio trong AI client rồi bấm **Kết nối AI với tab này**; tiện ích tự lấy mã qua localhost, không cần nhập. Nếu chạy nhiều phiên Studio, dùng **Nhập mã thủ công** với `pairingUrl` của phiên muốn chọn. Sau đó AI gọi `studio_start` với `endpoint: "extension"` và tự dùng tool inspect/click/fill/scroll/network/runtime. Không cần tải file và nhập thủ công trong luồng này. [Hướng dẫn đầy đủ](../docs/AI-WORKFLOW.md).
+
+Nếu bạn đã bật CDP, AI có thể dùng `endpoint: "chrome"` hoặc `"msedge"` mà không dùng tiện ích. Trạng thái trong popup cho biết lỗi mã kết nối, MCP đã dừng hoặc debugger mất kết nối. Cầu nối chỉ dùng 127.0.0.1 và mã ghép nối riêng của phiên. Bấm **Ngắt kết nối AI** để dừng quyền điều khiển tab.
+
 ## Cài vào trình duyệt đang dùng
 
 1. Chrome: mở `chrome://extensions`. Edge: mở `edge://extensions`.

@@ -1,4 +1,5 @@
 import { pageAction } from './remote.js';
+import { parsePairingUrl } from './pairing.js';
 let session;
 let lastCapture;
 let notice = '';
@@ -17,10 +18,16 @@ async function evaluateAction(type, args = {}) {
 async function remoteAction(type, args) {
   if (!session) throw new Error('Phiên tab đã kết thúc. Kết nối lại tiện ích.');
   if (type === 'capture') return stopCapture();
+  if (type === 'har') return { log: { entries: session.entries } };
+  if (type === 'runtime') return { ...await evaluateAction('runtime'), errors: session.errors };
   if (type === 'network') return session.entries.map(e => { const u = new URL(e.request.url); return { method: e.request.method, origin: u.origin, path: u.pathname, status: e.response.status }; });
   if (type === 'inspect' || type === 'extract') return evaluateAction(type, args);
   if (type !== 'step') throw new Error('Lệnh cầu nối không hợp lệ.');
   const step = args.step;
+  if (step.type !== 'navigate') {
+    const currentPage = await evaluateAction('runtime');
+    if (new URL(currentPage.url).origin !== new URL(session.targetUrl).origin) throw new Error('Tab đã chuyển website khác. Quay lại website đã ghép nối trước khi thao tác.');
+  }
   if (step.type === 'navigate') {
     if (new URL(step.url).origin !== new URL(session.targetUrl).origin) throw new Error('Chỉ điều hướng trong website đã ghép nối.');
     const result = await command(session.tabId, 'Page.navigate', { url: step.url });
@@ -50,14 +57,28 @@ async function bridgeFetch(connection, path, body) {
   if (!response.ok) throw new Error('Cầu nối từ chối kết nối (HTTP ' + response.status + '). Kiểm tra mã ghép nối.');
   return response.json();
 }
-async function pairBridge(pairingUrl) {
+async function pairBridge(pairingUrl, selectedTab) {
   if (bridge) throw new Error('Đã kết nối AI. Hãy ngắt kết nối cũ trước.');
-  const url = new URL(pairingUrl);
-  if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || !/^#[a-f0-9]{64}$/.test(url.hash)) throw new Error('Mã kết nối không hợp lệ. Dùng pairingUrl do tool studio_extension_pair trả về.');
-  if (!session) await startCapture();
+  if (!pairingUrl?.trim()) {
+    let response;
+    try {
+      response = await fetch('http://127.0.0.1:43119/pairing', {
+        headers: { 'X-Studio-Extension': chrome.runtime.id }, signal: AbortSignal.timeout(3000), cache: 'no-store'
+      });
+    } catch { throw new Error('Chưa tìm thấy MCP Studio đang chạy. Mở project trong AI client và bật server web_to_mcp_studio, rồi thử lại.'); }
+    if (response.status === 409) throw new Error('MCP Studio đã kết nối với một tab khác. Ngắt kết nối tab đó trước, hoặc dùng mã thủ công của phiên AI cần kết nối.');
+    if (!response.ok) throw new Error('Không tìm được cầu nối tự động hợp lệ. Dùng mã thủ công từ studio_extension_pair.');
+    pairingUrl = (await response.json()).pairingUrl;
+  }
+  const url = parsePairingUrl(pairingUrl);
+  const startedHere = !session;
+  if (!session) await startCapture(selectedTab);
   const connection = { base: url.origin, token: url.hash.slice(1) };
   try { await bridgeFetch(connection, '/hello', { url: session.targetUrl }); }
-  catch (error) { bridgeError = 'Không kết nối được AI. Hãy mở AI client, gọi studio_extension_pair và dùng mã mới. ' + error.message; throw new Error(bridgeError); }
+  catch (error) {
+    if (startedHere && session) { const id = session.tabId; session = undefined; await chrome.debugger.detach({ tabId: id }).catch(() => {}); }
+    bridgeError = 'Không kết nối được AI. Kiểm tra MCP Studio đang chạy rồi thử lại. ' + error.message; throw new Error(bridgeError);
+  }
   bridge = connection; bridgeError = '';
   void pollBridge(connection);
 }
@@ -87,15 +108,16 @@ async function disconnectBridge() {
   if (session) { const id = session.tabId; session = undefined; await chrome.debugger.detach({ tabId: id }).catch(() => {}); }
 }
 
-async function startCapture() {
+async function startCapture(selectedTab) {
   if (session) throw new Error('Đang ghi một tab khác. Hãy dừng phiên hiện tại trước.');
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = selectedTab ? await chrome.tabs.get(selectedTab.tabId) : (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
   const tabUrl = tab?.url ?? (await chrome.debugger.getTargets()).find(target => target.tabId === tab?.id)?.url;
   if (!tab?.id || !/^https?:\/\//.test(tabUrl ?? '')) throw new Error('Chỉ thu thập tab website HTTP(S), không thu thập trang cài đặt trình duyệt.');
-  const next = { tabId: tab.id, targetUrl: tabUrl, requests: new Map(), entries: [], pending: new Set(), warnings: [], bytes: 0, stopping: false };
+  if (selectedTab && new URL(tabUrl).origin !== selectedTab.origin) throw new Error('Tab đã chuyển sang website khác. Bật lại tự kết nối trên website muốn cho AI điều khiển.');
+  const next = { tabId: tab.id, targetUrl: tabUrl, requests: new Map(), entries: [], pending: new Set(), warnings: [], errors: [], bytes: 0, stopping: false };
   await chrome.debugger.attach({ tabId: tab.id }, '1.3');
   session = next;
-  try { await command(tab.id, 'Network.enable', { maxTotalBufferSize: 20_000_000, maxResourceBufferSize: 2_000_000 }); }
+  try { await command(tab.id, 'Network.enable', { maxTotalBufferSize: 20_000_000, maxResourceBufferSize: 2_000_000 }); await command(tab.id, 'Runtime.enable'); }
   catch (error) { session = undefined; await chrome.debugger.detach({ tabId: tab.id }); throw error; }
   lastCapture = undefined;
   notice = '';
@@ -106,6 +128,7 @@ async function startCapture() {
 chrome.debugger.onEvent.addListener((source, method, params) => {
   const current = session;
   if (!current || source.tabId !== current.tabId || current.stopping) return;
+  if (method === 'Runtime.exceptionThrown' && current.errors.length < 100) current.errors.push(params.exceptionDetails.exception?.description || params.exceptionDetails.text);
   if (method === 'Network.requestWillBeSent') {
     if (!/^https?:\/\//.test(params.request.url)) return;
     if (params.documentURL && /^https?:/.test(params.documentURL) && new URL(params.documentURL).origin !== new URL(current.targetUrl).origin) return;
@@ -188,23 +211,57 @@ async function stopCapture() {
   } catch (error) { if (session) session.stopping = false; throw error; }
 }
 
+async function stopAuto() {
+  await chrome.storage.session.remove('autoTarget');
+  await chrome.alarms.clear('studio-auto');
+}
+async function tryAutoConnect() {
+  if (busy || bridge || session) return;
+  busy = true;
+  try {
+    const { autoTarget } = await chrome.storage.session.get('autoTarget');
+    if (!autoTarget) return;
+    const tab = await chrome.tabs.get(autoTarget.tabId).catch(() => null);
+    if (!tab) { await stopAuto(); return; }
+    await pairBridge('', autoTarget);
+  } catch (error) { bridgeError = 'Đang chờ AI: ' + error.message; }
+  finally { busy = false; }
+}
+async function armAuto() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const url = tab?.url ?? (await chrome.debugger.getTargets()).find(t => t.tabId === tab?.id)?.url;
+  if (!tab?.id || !/^https?:\/\//.test(url ?? '')) throw new Error('Mở tab website muốn AI điều khiển trước.');
+  if (bridge || session) await disconnectBridge();
+  await chrome.storage.session.set({ autoTarget: { tabId: tab.id, origin: new URL(url).origin } });
+  await chrome.alarms.create('studio-auto', { periodInMinutes: 0.5 });
+}
+chrome.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'studio-auto') void tryAutoConnect(); });
+chrome.tabs.onRemoved.addListener(tabId => {
+  void chrome.storage.session.get('autoTarget').then(({ autoTarget }) => { if (autoTarget?.tabId === tabId) return stopAuto(); });
+});
 chrome.debugger.onDetach.addListener(source => {
+  if (session?.tabId === source.tabId) void stopAuto(); // Respect the user's Stop debugging button.
   if (session?.tabId === source.tabId) { session = undefined; notice = 'Phiên ghi bị ngắt (tab đóng, DevTools mở hoặc bạn dừng gỡ lỗi). Hãy bắt đầu phiên mới.'; }
   chrome.action.setBadgeText({ text: '' });
 });
 chrome.runtime.onMessage.addListener((message, sender, reply) => {
   if (sender.id !== chrome.runtime.id) return false;
   (async () => {
-    if (message.type === 'status') return { active: !!session, count: session?.entries.length ?? 0, host: session ? new URL(session.targetUrl).host : '', hasCapture: !!lastCapture, notice, bridgeConnected: !!bridge, bridgeError };
+    if (message.type === 'status') return { active: !!session, count: session?.entries.length ?? 0, host: session ? new URL(session.targetUrl).host : '', hasCapture: !!lastCapture, notice, bridgeConnected: !!bridge, bridgeError, autoTarget: (await chrome.storage.session.get('autoTarget')).autoTarget ?? null };
+    if (message.type === 'disconnect' || (message.type === 'auto' && !message.enabled)) {
+      const deadline = Date.now() + 5000;
+      while (busy && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 50));
+    }
     if (busy) throw new Error('Đang xử lý, vui lòng chờ.');
     busy = true;
     try {
       if (message.type === 'start') { await startCapture(); return {}; }
       if (message.type === 'pair') { await pairBridge(message.pairingUrl); return {}; }
-      if (message.type === 'disconnect') { await disconnectBridge(); return {}; }
+      if (message.type === 'auto') { if (message.enabled) await armAuto(); else { await stopAuto(); await disconnectBridge(); } return {}; }
+      if (message.type === 'disconnect') { await stopAuto(); await disconnectBridge(); return {}; }
       if (message.type === 'stop') return { capture: await stopCapture() };
       throw new Error('Yêu cầu không hợp lệ.');
-    } finally { busy = false; }
+    } finally { busy = false; if (message.type === 'auto' && message.enabled) void tryAutoConnect(); }
   })().then(data => reply({ ok: true, ...data })).catch(error => reply({ ok: false, error: error.message }));
   return true;
 });

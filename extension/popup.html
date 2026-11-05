@@ -5,8 +5,12 @@
   <h1>Web-to-MCP Studio</h1>
   <p>Thu thập API ngay trên tab đang đăng nhập.</p>
   <h2>Kết nối AI điều khiển tab</h2>
-  <p>Yêu cầu AI gọi <code>studio_extension_pair</code>, dán mã kết nối bên dưới.</p>
-  <input id="pairing" type="password" placeholder="http://127.0.0.1:…/#…" aria-label="Mã kết nối AI">
+  <p>Bật tự kết nối cho tab này một lần, rồi yêu cầu AI thao tác website. Tiện ích chờ MCP và tự kết nối trong khoảng 30 giây, không cần nhập mã.</p>
+  <label><input id="auto-connect" type="checkbox"> Tự kết nối AI với tab này</label>
+  <p id="auto-status">Chỉ áp dụng cho tab và website bạn chọn, đến khi đóng tab hoặc trình duyệt.</p>
+  <details><summary>Nhập mã thủ công (khi có nhiều phiên MCP)</summary>
+  <input id="pairing" type="password" placeholder="Dán pairingUrl do AI cung cấp" aria-label="Mã kết nối AI" autocomplete="off" spellcheck="false">
+  </details>
   <button id="connect">Kết nối AI với tab này</button>
   <button id="disconnect">Ngắt kết nối AI</button>
   <p id="bridge-status" role="status">Chưa kết nối AI.</p>

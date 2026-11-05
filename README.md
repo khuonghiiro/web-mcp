@@ -2,6 +2,10 @@
 
 CLI TypeScript biến những API quan sát được khi duyệt website thành MCP server độc lập chạy qua stdio.
 
+**Để AI tự click, nhập liệu, cuộn và khám phá website:** dùng **MCP Studio**, xem [hướng dẫn AI tự thao tác](docs/AI-WORKFLOW.md). Chạy `setup.bat`, thêm `studio-client-config.json` vào AI client, rồi yêu cầu AI dùng các tool `studio_*`. Mục **9** trong `run.bat` tạo cấu hình và hướng dẫn. Mục 1/2 là luồng thu thập thủ công, không tự chạy AI.
+
+MCP website sinh ra có thể gồm API tools và browser workflow tools có tham số. Tiện ích bản 0.2.0 hỗ trợ ghép nối trực tiếp để AI điều khiển tab, bên cạnh xuất file thủ công.
+
 ## Cài đặt
 
 ### Windows: chạy bằng file BAT

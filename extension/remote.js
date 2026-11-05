@@ -1,5 +1,6 @@
 // Only predefined actions are accepted. No arbitrary script from the AI or webpage is executed.
 export function pageAction(type, args) {
+  if (type === 'runtime') return { url: location.href, readyState: document.readyState, scripts: [...document.scripts].slice(0, 100).map(script => ({ src: script.src || null, type: script.type || 'classic', inlineLength: script.src ? 0 : (script.textContent?.length ?? 0) })), resources: performance.getEntriesByType('resource').slice(-100).map(entry => ({ name: entry.name, initiatorType: entry.initiatorType, duration: Math.round(entry.duration) })) };
   const find = () => { const all = document.querySelectorAll(args.selector); if (all.length !== 1) throw new Error('Selector cần khớp đúng một phần tử, hiện khớp ' + all.length); return all[0]; };
   if (type === 'inspect') {
     const selector = el => {

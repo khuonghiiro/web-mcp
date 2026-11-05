@@ -2,7 +2,7 @@ import type { Page, Request } from 'playwright';
 import { writeJson, type Entry } from '../core.js';
 
 /** An existing browser context cannot be retrofitted with recordHar. */
-export function recordPage(page: Page) {
+export function recordPage(page: Page, onEntry?: (entry: Entry) => void) {
   const entries: Entry[] = [];
   const pending = new Set<Promise<void>>();
   const warnings: string[] = [];
@@ -21,11 +21,13 @@ export function recordPage(page: Page) {
         catch { warnings.push('Không đọc được một response body (có thể do chuyển trang hoặc redirect).'); }
       }
     }
-    entries.push({
+    const entry: Entry = {
       startedDateTime: new Date().toISOString(), time: 0,
       request: { url: request.url(), method: request.method(), headers: await request.headersArray(), queryString: [...new URL(request.url()).searchParams].map(([name, value]) => ({ name, value })), ...(request.postData() !== null ? { postData: { mimeType: request.headers()['content-type'] ?? 'text/plain', text: request.postData()! } } : {}) },
       response: { status: response.status(), headers: await response.headersArray(), content: { mimeType, ...(text === undefined ? {} : { text }) } }
-    });
+    };
+    entries.push(entry);
+    onEntry?.(entry);
   };
   const listener = (request: Request) => {
     const task = record(request).catch(() => { warnings.push('Một yêu cầu không được ghi đầy đủ.'); }).finally(() => pending.delete(task));

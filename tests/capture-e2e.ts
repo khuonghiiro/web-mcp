@@ -18,6 +18,7 @@ assert.ok(address && typeof address !== 'string');
 const url = `http://127.0.0.1:${address.port}/`;
 const extensionPath = resolve('extension');
 const profile = join(root, 'profile');
+await writeJson(join(profile, 'Default/Preferences'), { download: { default_directory: join(root, 'downloads'), prompt_for_download: false }, savefile: { default_directory: join(root, 'downloads') } });
 const context = await chromium.launchPersistentContext(profile, {
   executablePath: chromium.executablePath(), headless: true,
   acceptDownloads: true, downloadsPath: join(root, 'downloads'),
@@ -73,7 +74,11 @@ try {
   assert.match(await popup.locator('h1').innerText(), /Web-to-MCP/);
   const [download] = await Promise.all([popup.waitForEvent('download', { timeout: 15000 }), popup.locator('#stop').click()]);
   const downloadPath = join(root, 'downloaded.web-mcp.json');
-  await download.saveAs(downloadPath);
+  try { await download.saveAs(downloadPath); }
+  catch (error) {
+    const details = await popup.evaluate(async () => (await (globalThis as any).chrome.downloads.search({ limit: 1, orderBy: ['-startTime'] })).map((item: any) => ({ state: item.state, error: item.error, filename: item.filename })));
+    throw new Error(String(error) + ' ' + JSON.stringify(details));
+  }
   assert.equal((await readJson(downloadPath) as { format: string }).format, 'web-to-mcp-capture-v1');
   await popup.setViewportSize({ width: 380, height: 620 });
   await popup.screenshot({ path: join(root, 'extension.png') });

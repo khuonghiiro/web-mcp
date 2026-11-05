@@ -1,7 +1,7 @@
 import { chromium, type Browser, type Page } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { httpUrl, projectPath, writeJson, readJson, harSchema } from '../core.js';
+import { httpUrl, projectPath, writeJson, readJson, harSchema, type Entry } from '../core.js';
 import { recordPage } from '../scout/recorder.js';
 import { detectAuth } from '../scout/detector.js';
 import { filterHar } from '../analyzer/harFilter.js';
@@ -15,6 +15,8 @@ export class StudioSession {
   bridge = new ExtensionBridge();
   extensionMode = false;
   active = false;
+  entries: Entry[] = [];
+  runtimeErrors: string[] = [];
   browser?: Browser;
   page?: Page;
   dir = '';
@@ -32,6 +34,11 @@ export class StudioSession {
   async start(name: string, url: string, endpoint: string) {
     if (this.active) throw new Error('Đã có phiên. Gọi studio_finish hoặc studio_close trước.');
     const target = httpUrl(url);
+    if (endpoint === 'extension' && !this.bridge.connected) {
+      await this.bridge.start(true);
+      const deadline = Date.now() + 35000;
+      while (!this.bridge.connected && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 250));
+    }
     if (endpoint === 'extension' && (!this.bridge.connected || new URL(this.bridge.tabUrl).origin !== target.origin)) throw new Error('Hãy ghép nối tiện ích trên đúng website qua studio_extension_pair trước.');
     this.dir = projectPath(join(this.root, 'artifacts'), name);
     await mkdir(join(this.root, 'artifacts'), { recursive: true });
@@ -39,15 +46,17 @@ export class StudioSession {
     try {
       this.name = name; this.target = target.href; this.workflows = []; this.draft = undefined; this.network = [];
       this.active = true;
+      this.entries = []; this.runtimeErrors = [];
       this.extensionMode = endpoint === 'extension';
-      if (this.extensionMode) return this.inspect();
+      if (this.extensionMode) return await this.inspect();
       this.browser = await chromium.connectOverCDP(endpoint, { noDefaults: true, timeout: 30000 });
       const context = this.browser.contexts()[0];
       if (!context) throw new Error('Không tìm thấy phiên trình duyệt.');
       this.name = name; this.target = target.href; this.workflows = []; this.draft = undefined; this.network = [];
       this.page = context.pages().find(page => page.url() === target.href) ?? await context.newPage();
       this.page.setDefaultTimeout(15000);
-      this.finishRecording = recordPage(this.page);
+      this.finishRecording = recordPage(this.page, entry => this.entries.push(entry));
+      this.page.on('pageerror', error => { if (this.runtimeErrors.length < 100) this.runtimeErrors.push(error.message); });
       this.page.on('response', response => {
         if (this.network.length >= 2000) return;
         try { const url = new URL(response.url()); this.network.push({ method: response.request().method(), origin: url.origin, path: url.pathname, status: response.status() }); } catch { /* Non-HTTP response. */ }
@@ -59,6 +68,16 @@ export class StudioSession {
   async inspect() { if (!this.active) throw new Error('Gọi studio_start trước.'); return this.extensionMode ? this.bridge.rpc('inspect') : inspectPage(this.current()); }
   async extract(selector: string) { if (!this.active) throw new Error('Gọi studio_start trước.'); return this.extensionMode ? this.bridge.rpc('extract', { selector }) : extractPage(this.current(), selector); }
   async listNetwork() { return this.extensionMode ? this.bridge.rpc('network') : this.network; }
+  async apiPreview(origin?: string) {
+    if (!this.active) throw new Error('Gọi studio_start trước.');
+    const har = this.extensionMode ? await this.bridge.rpc('har') : { log: { entries: this.entries } };
+    const targetOrigin = origin ? httpUrl(origin).origin : new URL(this.target).origin;
+    return makeSpec(filterHar(har, targetOrigin), targetOrigin, this.name);
+  }
+  async runtime() {
+    if (this.extensionMode) return this.bridge.rpc('runtime');
+    return { ...await this.current().evaluate(() => ({ url: location.href, readyState: document.readyState, scripts: [...document.scripts].map(script => ({ src: script.src || null, type: script.type || 'classic', inlineLength: script.src ? 0 : (script.textContent?.length ?? 0) })).slice(0, 100), resources: performance.getEntriesByType('resource').slice(-100).map(entry => ({ name: entry.name, initiatorType: (entry as PerformanceResourceTiming).initiatorType, duration: Math.round(entry.duration) })) })), errors: this.runtimeErrors };
+  }
   async beginWorkflow() {
     const snapshot = await this.inspect();
     if (this.draft) throw new Error('Đang ghi một quy trình. Lưu hoặc hủy quy trình trước.');
@@ -112,7 +131,7 @@ export class StudioSession {
     const spec = makeSpec(har, origin, this.name);
     if (!Object.keys(spec.paths).length && !this.workflows.length) {
       if (this.extensionMode) await this.close();
-      else this.finishRecording = recordPage(this.current());
+      else this.finishRecording = recordPage(this.current(), entry => this.entries.push(entry));
       throw new Error('Chưa khám phá API hoặc lưu quy trình. Dữ liệu đã lưu; hãy khám phá thêm (ghép nối lại nếu dùng tiện ích).');
     }
     await writeJson(join(this.dir, 'api-spec.json'), spec);
