@@ -56,6 +56,16 @@ try {
   await call(client, 'studio_start', { name: 'site', url, endpoint: 'extension' });
   const snapshot = await call(client, 'studio_inspect');
   assert.ok(snapshot.controls.some((c: any) => c.selector === '#search'));
+  await page.evaluate(() => {
+    const editor = document.createElement('div'); editor.id = 'rich-editor'; editor.contentEditable = 'true';
+    editor.setAttribute('aria-label', 'Prompt'); editor.textContent = 'Old content'; document.body.append(editor);
+    editor.addEventListener('input', event => editor.dataset.trustedInput = String(event.isTrusted));
+  });
+  assert.ok((await call(client, 'studio_inspect')).controls.some((c: any) => c.selector === '#rich-editor' && c.editable));
+  await call(client, 'studio_fill', { selector: '#rich-editor', value: 'A peaceful mountain lake', parameter: 'prompt' });
+  assert.equal(await page.locator('#rich-editor').innerText(), 'A peaceful mountain lake');
+  assert.equal(await page.locator('#rich-editor').getAttribute('data-trusted-input'), 'true');
+  await page.locator('#rich-editor').evaluate(el => el.remove());
   await call(client, 'studio_workflow_begin');
   await call(client, 'studio_fill', { selector: '#search', value: 'first-agent-query', parameter: 'query' });
   await call(client, 'studio_click', { selector: '#go' });

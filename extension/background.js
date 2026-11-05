@@ -46,7 +46,10 @@ async function remoteAction(type, args) {
   } else if (step.type === 'wait') {
     const deadline = Date.now() + 15000;
     while (!await evaluateAction('wait', step)) { if (Date.now() > deadline) throw new Error('Hết thời gian chờ selector.'); await new Promise(resolve => setTimeout(resolve, 200)); }
-  } else if (step.type === 'fill') await evaluateAction('fill', { ...step, value: args.value });
+  } else if (step.type === 'fill') {
+    const result = await evaluateAction('fill', { ...step, value: args.value });
+    if (result?.insertText) await command(session.tabId, 'Input.insertText', { text: args.value });
+  }
   else if (step.type === 'scroll') await evaluateAction('scroll', step);
   else throw new Error('Bước không được hỗ trợ.');
   await new Promise(resolve => setTimeout(resolve, 350));
