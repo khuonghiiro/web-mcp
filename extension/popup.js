@@ -26,12 +26,15 @@ function waitForDownload(id) {
 async function refresh() {
   const state = await send('status');
   document.querySelector('#auto-connect').checked = !!state.autoTarget;
-  document.querySelector('#auto-status').textContent = state.autoTarget ? 'Tự kết nối đã bật cho ' + state.autoTarget.origin + '. Chỉ tab đã chọn được điều khiển.' : 'Bật một lần trên tab cần thao tác. Đóng tab hoặc trình duyệt sẽ kết thúc chế độ tự động.';
+  document.querySelector('#auto-status').textContent = state.autoTarget ? state.autoTarget.origin : 'Bật một lần. Tự kết nối trong khoảng 30 giây.';
+  document.body.classList.toggle('connected', state.bridgeConnected);
+  document.querySelector('#connect').hidden = state.bridgeConnected;
+  document.querySelector('#disconnect').hidden = !state.bridgeConnected;
   start.disabled = state.active;
   stop.disabled = !state.active && !state.hasCapture;
   document.querySelector('#connect').disabled = state.bridgeConnected;
   document.querySelector('#disconnect').disabled = !state.bridgeConnected;
-  bridgeStatus.textContent = state.bridgeConnected ? 'Đã kết nối AI. AI có thể thao tác trên tab được chọn.' : state.bridgeError || 'Bấm Kết nối AI để tự tìm MCP Studio trên máy.';
+  bridgeStatus.textContent = state.bridgeConnected ? 'Đã kết nối · ' + state.host : state.bridgeError || (state.autoTarget ? 'Đang chờ MCP Studio…' : 'Chưa kết nối với AI');
   if (state.bridgeConnected) { start.disabled = true; stop.disabled = true; }
   status.textContent = state.active ? `Đang ghi ${state.count} yêu cầu. Tab: ${state.host}` : state.notice || 'Sẵn sàng. Mở website cần thu thập rồi nhấn Bắt đầu.';
 }
