@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "web-to-mcp-studio": {
+      "command": "node",
+      "args": [
+        "scripts/start-studio.mjs"
+      ]
+    }
+  },
+  "_comment": "Config này sử dụng relative paths. Chạy từ project root. Nếu client không hỗ trợ, thay bằng absolute path của máy bạn."
+}
