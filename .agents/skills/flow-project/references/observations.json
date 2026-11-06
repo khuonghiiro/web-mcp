@@ -45,6 +45,15 @@
       "workflowNames": []
     },
     {
+      "session": "flow-gen-lite-4x3-x2-1793931628942",
+      "evidence": "artifacts/flow.google.com/flow-gen-lite-4x3-x2-1793931628942",
+      "endpointIds": [
+        "d16e4c6d8d70",
+        "85eaf97ce791"
+      ],
+      "workflowNames": []
+    },
+    {
       "session": "flow-generate-1793845317165",
       "evidence": "artifacts/flow.google.com/flow-generate-1793845317165",
       "endpointIds": [
