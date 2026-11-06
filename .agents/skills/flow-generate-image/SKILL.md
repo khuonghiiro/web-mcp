@@ -1,40 +1,43 @@
 ---
 name: flow:generate-image
-description: "Nhập prompt và tạo ảnh trên flow.google.com; hỗ trợ thao tác UI đã quan sát, giải thích RPC ảnh và giới hạn xác minh của API."
+description: "Submit an image prompt with model/aspect/count options in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`)."
 ---
 
 <!-- web-to-mcp:managed -->
 # flow:generate-image
 
-Website: https://flow.google.com/. Chỉ dùng cho hostname này.
+Website: https://flow.google.com/ (exact hostname scope).
 
-## Tạo ảnh trong dự án Flow
+## Generate images in a Flow project
 
-Trạng thái kiểm chứng: Tạo qua UI từng thành công 1 ảnh 1024×1024; API độc lập thiếu xác minh thất bại. Workflow selector cần inspect lại trước khi replay.
+Verification: Browser generation verified (1024x1024 image created); standalone API confirmed blocked by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).
 
-Đầu vào:
-- `project`: Dự án người dùng chọn; nếu chưa có thì dùng flow:list-projects hoặc flow:create-project khi được yêu cầu.
-- `prompt`: Nội dung ảnh do người dùng yêu cầu; vị trí quan sát trong payload RPC: args[1][0][8][0][0][0].
-- `options`: Model, số ảnh và tỉ lệ nếu người dùng chỉ định. Đọc lựa chọn hiện hành trên UI; chưa xác minh đầy đủ ánh xạ API.
+## Execution Routing
+Default: **browser** — Website verification / reCAPTCHA required; use browser session instead of standalone API.
+Call `studio_site_route` with URL and task `generate-image`. Use API directly when `api=verified` and `captcha=not-observed`; use browser when CAPTCHA/verification is required or when the user requests UI.
+- API skill: [flow:api-generate-image](../flow-api-generate-image/SKILL.md)
+- Browser skill: [flow:browser-generate-image](../flow-browser-generate-image/SKILL.md)
+- Expired auth: refresh via [flow:auth](../flow-auth/SKILL.md). Ambiguous write: inspect UI before retrying.
 
-Chuẩn bị: [flow:auth](../flow-auth/SKILL.md). Nếu người dùng chọn UI, dùng nhánh UI bên dưới.
+Inputs:
+- `projectId`: Target project UUID.
+- `prompt`: Image generation prompt text.
+- `options`: Optional model (`GEM_PIX_2`, `HARBOR_SEAL`, `BELUGA`), aspect ratio (`16:9`, `4:3`, `1:1`, `3:4`, `9:16`), and count (`x1`–`x4`).
 
-## API
-- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `ogiZ0b`; schema ID `d16e4c6d8d70` trong [hợp đồng API](../flow-project/references/api.json).
-- POST batchexecute với rpcids=ogiZ0b. Xem schema form f.req/at và tuple JSON trong api.json; payload args là JSON nằm ở envelope[0][0][1]. Vị trí prompt nêu trên đã đối chiếu kiểu string trong capture.
-- Các UUID, seed, model/config và context khác phải lấy từ thao tác hiện hành; chưa đủ bằng chứng gán tên cho mọi vị trí tuple. Không gửi ID của tài khoản đã cào trước.
-- API ảnh độc lập chưa được xác nhận dùng được: thử thiếu dữ liệu xác minh trả HTTP 200 nhưng lỗi RPC 7 PUBLIC_ERROR_UNUSUAL_ACTIVITY. Không tự tạo/giả token, không xem token dài là cấu hình cố định.
-- Nếu người dùng muốn API, ghi một lần tạo hợp lệ qua website rồi đối chiếu request/response. Khi còn phụ thuộc xác minh website, báo giới hạn và dùng UI nếu phù hợp yêu cầu.
+## API Branch
+- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `ogiZ0b` (inherits `params-82e85614`); schema `d16e4c6d8d70` in [API contract](../flow-project/references/api.json).
+- Observed RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=ogiZ0b`.
+- Payload dependency mapping in `f.req` (`args = JSON.parse(envelope[0][0][1])`): `args[1]` is an array of generation items (length = output count `1..4`, or repeated entries per image); for each item `item = args[1][i]`: `item[3]` is random 32-bit integer seed, `item[4]` is aspect ratio enum (`1` = 1:1 square observed), `item[5]` is model code (`"GEM_PIX_2"`, `"HARBOR_SEAL"`, or `"BELUGA"`), `item[7][5]` is `projectId`, `item[7][10][0]` is the reCAPTCHA Enterprise token, and `item[8][0][0][0]` is the prompt string.
+- reCAPTCHA Enterprise gate: Flow loads `https://www.google.com/recaptcha/enterprise.js?trustedtypes=true&render=6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV` and attaches a single-use browser-minted token at `args[1][i][7][10][0]` and `args[3][10][0]`. Standalone API replay without a live browser-minted token returns HTTP 200 with RPC error `7 PUBLIC_ERROR_UNUSUAL_ACTIVITY`.
+- Therefore, always route `generate-image` to `flow:browser-generate-image` so the browser executes `grecaptcha.enterprise.execute(...)` natively upon clicking submit.
 
-## UI
-1. Mở đúng dự án và inspect, chọn chế độ ảnh thay vì video khi UI có lựa chọn. Không bắt đầu nhập prompt ở trang danh sách.
-2. Tìm trình soạn thảo contenteditable trong flow-rich-text-editor bằng studio_inspect. Dùng selector được trả về và studio_fill với parameter=prompt; kiểm tra nội dung đã nhập. Không dùng textarea giả định.
-3. Chọn model/tỉ lệ/số ảnh từ các control quan sát được theo yêu cầu, sau đó tìm nút bắt đầu tạo. Selector từng ghi: button[aria-label='Bắt đầu tạo']; kiểm tra lại ngôn ngữ và trạng thái enabled.
-4. Click gửi một lần, theo dõi tiến trình và lỗi bằng inspect. Nếu yêu cầu xác minh, để người dùng hoàn thành trên website rồi kiểm tra lại trạng thái; không bấm tạo liên tục.
-5. Chờ card ảnh hoàn tất; đọc kết quả thực tế và link nếu có. Selector img[alt*='generated'], div.image-result trong bản ghi cũ chưa được chứng minh ổn định, không dùng làm điều kiện thành công duy nhất.
+## Browser Branch
+1. Open `/project/<projectId>` (`flow:open-project`) and configure model/aspect/count if needed (`flow:configure-generation`).
+2. Inspect `flow-rich-text-editor` to get the `[contenteditable="true"]` selector, then call `studio_fill` with `parameter: "prompt"` and verify text insertion.
+3. Inspect and click the submit button (`flow-generate-icon-button button`, `aria-label="Bắt đầu tạo"`) once.
+4. Wait and poll `studio_inspect` / `studio_network` until `ogiZ0b` completes and the generated image card renders in the project grid.
 
-## Kiểm tra kết quả
-- UI hiển thị ảnh hoàn tất trong đúng dự án, không còn pending hoặc lỗi.
-- Đối chiếu số ảnh/kích thước nếu UI cung cấp. HTTP 200 hoặc một ảnh thumbnail cũ không chứng minh tạo ảnh mới thành công.
+## Success Criteria
+- New image card finishes rendering in `/project/<projectId>` matching the requested prompt and count, with no RPC 7 error banner.
 
-Nguồn mô tả đã rà soát: [tasks.json](../flow-project/references/tasks.json). Không tự ghi đè file này khi cào bổ sung.
+Reviewed task source: [tasks.json](../flow-project/references/tasks.json).

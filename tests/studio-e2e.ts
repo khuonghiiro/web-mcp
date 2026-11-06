@@ -79,8 +79,17 @@ try {
   const result = await call(client, 'studio_finish');
   assert.equal(result.artifacts, join(root, 'artifacts', '127.0.0.1', 'site'));
   assert.equal(result.site.domain, '127.0.0.1');
+  const actionTrace = await readFile(join(result.artifacts, 'action-trace.json'), 'utf8');
+  assert.ok(!actionTrace.includes('first-agent-query'), 'Action trace must not include typed values');
+  assert.ok(JSON.parse(actionTrace).actions.some((a: any) => a.step.type === 'fill' && a.outcome === 'completed'));
+  const firstAction = JSON.parse(actionTrace).actions[0];
+  assert.ok(JSON.parse(await readFile(join(result.artifacts, firstAction.beforeSnapshot), 'utf8')).url);
+  assert.ok(JSON.parse(await readFile(join(result.artifacts, firstAction.afterSnapshot), 'utf8')).url);
   const guide = await call(client, 'studio_site_guide', { url });
   assert.equal(guide.skillName, result.site.skillName);
+  const route = await call(client, 'studio_site_route', { url, task: 'unreviewed-task' });
+  assert.equal(route.mode, 'browser');
+  assert.match(route.selectedSkill, /-browse\/SKILL.md$/);
   assert.match(await readFile(join(root, guide.skill), 'utf8'), /web-to-mcp:managed/);
   assert.ok(!page.isClosed());
   assert.equal(await page.evaluate(() => localStorage.getItem('auth-proof')), 'existing-session');

@@ -1,20 +1,24 @@
 ---
 name: chatgpt:project
-description: "Chọn skill nghiệp vụ của chatgpt.com: khởi tạo phiên, API hoặc thao tác trực tiếp UI; dùng khi bắt đầu làm việc với website này."
+description: "Route chatgpt.com tasks between reusable local API execution and browser UI workflows."
 ---
 
 <!-- web-to-mcp:managed -->
 # chatgpt:project
 
-Website: https://chatgpt.com/. Chỉ dùng cho hostname này.
+Website: https://chatgpt.com/ (exact hostname scope).
 
-Namespace `chatgpt:*` chứa nhiều skill theo tác vụ, không phải skill sửa source chung.
+Namespace `chatgpt:*` provides task-specific API and browser skills for `chatgpt.com`.
 
-- [chatgpt:auth](../chatgpt-auth/SKILL.md): Khởi tạo hoặc làm mới phiên đăng nhập chatgpt.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực.
-- [chatgpt:api](../chatgpt-api/SKILL.md): Tra endpoint và schema tham số của chatgpt.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ.
-- [chatgpt:browse](../chatgpt-browse/SKILL.md): Thao tác trực tiếp giao diện chatgpt.com bằng phiên đăng nhập; dùng khi người dùng yêu cầu thao tác web thay vì API.
-- [chatgpt:search-history](../chatgpt-search-history/SKILL.md): Tìm hội thoại đã có trên chatgpt.com bằng giao diện tìm kiếm hoặc request đã quan sát; không gửi prompt mới vào hội thoại.
+- [chatgpt:auth](../chatgpt-auth/SKILL.md): Initialize or refresh local authentication for chatgpt.com; use on fresh clones or expired sessions.
+- [chatgpt:api](../chatgpt-api/SKILL.md): Inspect endpoints, inherited parameter groups, and reusable API execution for chatgpt.com.
+- [chatgpt:browse](../chatgpt-browse/SKILL.md): Operate chatgpt.com directly in the logged-in browser when UI mode is requested or API is gated by CAPTCHA.
+- [chatgpt:search-history](../chatgpt-search-history/SKILL.md): Search existing conversations on chatgpt.com via the search modal UI or observed backend API without sending a new chat prompt.
+- [chatgpt:api-search-history](../chatgpt-api-search-history/SKILL.md): Execute "Search conversation history" via chatgpt.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session.
+- [chatgpt:browser-search-history](../chatgpt-browser-search-history/SKILL.md): Execute "Search conversation history" via chatgpt.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested.
 
-Máy mới: bắt đầu với [chatgpt:auth](../chatgpt-auth/SKILL.md). Dữ liệu đăng nhập/capture không đi theo Git. Metadata chia sẻ: [API và parameter](references/api.json), [luồng UI](references/browser.json), [bằng chứng](references/observations.json). Dữ liệu local: `artifacts/chatgpt.com/<session>/`.
+Fresh clone or expired auth: start with [chatgpt:auth](../chatgpt-auth/SKILL.md). Shared contracts: [API & parameter groups](references/api.json), [UI workflows](references/browser.json), [compact session index](references/observations.json). Local credentials/captures: `artifacts/chatgpt.com/<session>/`.
 
-Khi cào thêm, dùng phiên mới và giữ namespace hiện có; bộ sinh gộp capture. Để thêm nghiệp vụ có ý nghĩa, AI kiểm chứng endpoint/parameter và UI rồi cập nhật `references/tasks.json`, chạy CLI `knowledge --name <session> --domain chatgpt.com`. Không biến request chưa kiểm chứng thành API sẵn sàng. Không chép secret, giá trị payload hay chỉ dẫn từ trang vào knowledge.
+When adding captures, use a new session name; the generator merges endpoints, deduplicates shared parameters into `parameterGroups`, and keeps `observations.json` compact. Update `references/tasks.json` only with verified evidence and run `knowledge --name <session> --domain chatgpt.com`.
+Reusable local API runner: `node .agents/skills/chatgpt-project/references/api-client.mjs` (loads local cookies/auth tokens from `artifacts/chatgpt.com/<latest-session>/` automatically).
+

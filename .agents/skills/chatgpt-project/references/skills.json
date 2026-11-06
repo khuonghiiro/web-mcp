@@ -2,26 +2,36 @@
   {
     "name": "chatgpt:auth",
     "path": ".agents/skills/chatgpt-auth/SKILL.md",
-    "description": "Khởi tạo hoặc làm mới phiên đăng nhập chatgpt.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực."
+    "description": "Initialize or refresh local authentication for chatgpt.com; use on fresh clones or expired sessions."
   },
   {
     "name": "chatgpt:api",
     "path": ".agents/skills/chatgpt-api/SKILL.md",
-    "description": "Tra endpoint và schema tham số của chatgpt.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ."
+    "description": "Inspect endpoints, inherited parameter groups, and reusable API execution for chatgpt.com."
   },
   {
     "name": "chatgpt:browse",
     "path": ".agents/skills/chatgpt-browse/SKILL.md",
-    "description": "Thao tác trực tiếp giao diện chatgpt.com bằng phiên đăng nhập; dùng khi người dùng yêu cầu thao tác web thay vì API."
+    "description": "Operate chatgpt.com directly in the logged-in browser when UI mode is requested or API is gated by CAPTCHA."
   },
   {
     "name": "chatgpt:search-history",
     "path": ".agents/skills/chatgpt-search-history/SKILL.md",
-    "description": "Tìm hội thoại đã có trên chatgpt.com bằng giao diện tìm kiếm hoặc request đã quan sát; không gửi prompt mới vào hội thoại."
+    "description": "Search existing conversations on chatgpt.com via the search modal UI or observed backend API without sending a new chat prompt."
+  },
+  {
+    "name": "chatgpt:api-search-history",
+    "path": ".agents/skills/chatgpt-api-search-history/SKILL.md",
+    "description": "Execute \"Search conversation history\" via chatgpt.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "chatgpt:browser-search-history",
+    "path": ".agents/skills/chatgpt-browser-search-history/SKILL.md",
+    "description": "Execute \"Search conversation history\" via chatgpt.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
   },
   {
     "name": "chatgpt:project",
     "path": ".agents/skills/chatgpt-project/SKILL.md",
-    "description": "Chọn skill nghiệp vụ của chatgpt.com: khởi tạo phiên, API hoặc thao tác trực tiếp UI; dùng khi bắt đầu làm việc với website này."
+    "description": "Route chatgpt.com tasks between reusable local API execution and browser UI workflows."
   }
 ]

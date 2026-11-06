@@ -8,6 +8,7 @@ import { writeJson } from '../src/core.js';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { shape } from '../src/knowledge/contracts.js';
+import { chooseRoute, executionSchema, siteRoute } from '../src/knowledge/routing.js';
 
 async function workspace(t: any) {
   const base = resolve('artifacts/tmp'); await mkdir(base, { recursive: true });
@@ -83,20 +84,33 @@ test('migration previews, retains unknown folders and never overwrites destinati
   assert.equal((await migrateArtifacts(base, true)).filter(x => x.status === 'conflict-kept').length, 1);
 });
 
-test('RPC contracts retain positional parameters without captured values; tasks work in a fresh checkout', async t => {
+test('RPC contracts retain positional parameters, deduplicate parameterGroups, and compact observations; tasks work in a fresh checkout', async t => {
   const root = await workspace(t), dir = await capture(root, 'flow.google.com', 'rpc');
   const body = new URLSearchParams({ at: 'PRIVATE_SECRET', 'f.req': JSON.stringify([[['jHPbke', JSON.stringify([null, [null, ['PRIVATE_TITLE']]]), null, 'generic']]]) });
-  await writeJson(join(dir, 'traffic.har'), { log: { entries: [{ request: { method: 'POST', url: 'https://flow.google.com/batch?rpcids=jHPbke&f.sid=PRIVATE_SESSION', headers: [{ name: 'Cookie', value: 'PRIVATE_COOKIE' }], postData: { mimeType: 'application/x-www-form-urlencoded', text: body.toString() } }, response: { status: 200, content: { text: 'PRIVATE_RESPONSE' } } }] } });
+  const body2 = new URLSearchParams({ at: 'PRIVATE_SECRET', 'f.req': JSON.stringify([[['o8DA4', JSON.stringify(['projects/123', ['PRIVATE_TITLE'], [['project_title']], [null, 22]]), null, 'generic']]]) });
+  await writeJson(join(dir, 'traffic.har'), { log: { entries: [
+    { request: { method: 'POST', url: 'https://flow.google.com/batch?rpcids=jHPbke&f.sid=PRIVATE_SESSION', headers: [{ name: 'Cookie', value: 'PRIVATE_COOKIE' }], postData: { mimeType: 'application/x-www-form-urlencoded', text: body.toString() } }, response: { status: 200, content: { text: 'PRIVATE_RESPONSE' } } },
+    { request: { method: 'POST', url: 'https://flow.google.com/batch?rpcids=o8DA4&f.sid=PRIVATE_SESSION', headers: [{ name: 'Cookie', value: 'PRIVATE_COOKIE' }], postData: { mimeType: 'application/x-www-form-urlencoded', text: body2.toString() } }, response: { status: 200, content: { text: 'PRIVATE_RESPONSE' } } },
+    { request: { method: 'POST', url: 'https://flow.google.com/batch?rpcids=WuwhI&f.sid=PRIVATE_SESSION', headers: [{ name: 'Cookie', value: 'PRIVATE_COOKIE' }], postData: { mimeType: 'application/x-www-form-urlencoded', text: body.toString() } }, response: { status: 200, content: { text: 'TELEMETRY' } } },
+  ] } });
   await writeJson(join(dir, 'workflows.json'), [{ name: 'create_project', startUrl: 'https://flow.google.com/', steps: [{ type: 'fill', parameter: 'name', selector: '[data-secret="PRIVATE_SELECTOR"]' }, { type: 'click', selector: '#create' }], resultSelector: '#result' }]);
   await syncSiteKnowledge(root, dir);
   const refs = join(root, '.agents/skills/flow-project/references');
   const definition = [{ id: 'create-project', title: 'Create', description: 'Create a Flow project', inputs: { name: 'Project name' }, rpcIds: ['jHPbke'], api: ['Use current session and args[1][1][0].'], browser: ['Inspect create button; click once.'], success: ['Verify new ID in list.'], verification: 'reviewed', workflowNames: ['create_project'] }];
   await writeJson(join(refs, 'tasks.json'), definition);
   await syncSiteKnowledge(root, dir);
-  const contract = JSON.parse(await readFile(join(refs, 'api.json'), 'utf8')).endpoints[0];
-  assert.equal(contract.rpcId, 'jHPbke');
+  const apiJson = JSON.parse(await readFile(join(refs, 'api.json'), 'utf8'));
+  assert.equal(apiJson.endpoints.length, 2);
+  const contract = apiJson.endpoints.find((e: any) => e.rpcId === 'jHPbke');
+  assert.ok(contract);
+  assert.ok(contract.parameterGroup);
+  assert.equal(contract.parameters.length, 0);
+  assert.ok(Array.isArray(apiJson.parameterGroups[contract.parameterGroup]));
   assert.equal(contract.body.schema.properties.at.type, 'local-credential');
   assert.equal(contract.body.schema.properties['f.req'].decodedJson.tuple[0].tuple[0].tuple[1].decodedJson.tuple[1].tuple[1].tuple[0].type, 'string');
+  const obsJson = JSON.parse(await readFile(join(refs, 'observations.json'), 'utf8'));
+  assert.ok(Array.isArray(obsJson.captures[0].endpointIds));
+  assert.equal(obsJson.captures[0].endpointIds.length, 2);
   const exported = (await readFile(join(refs, 'api.json'), 'utf8')) + await readFile(join(refs, 'browser.json'), 'utf8');
   assert.ok(!exported.includes('PRIVATE_'));
   assert.deepEqual(shape({ password: 'PRIVATE_SECRET', count: 3 }), { type: 'object', properties: { password: { type: 'local-credential' }, count: { type: 'integer' } } });
@@ -106,6 +120,9 @@ test('RPC contracts retain positional parameters without captured values; tasks 
   const guide = await siteGuide(clone, 'flow.google.com'); assert.ok('skills' in guide);
   assert.ok((guide.skills as any[]).some(s => s.name === 'flow:create-project'));
   for (const skill of guide.skills as any[]) await access(join(clone, skill.path));
+  const route = await siteRoute(clone, 'flow.google.com', 'create-project');
+  assert.equal(route.mode, 'browser'); assert.ok('selectedSkill' in route);
+  await access(join(clone, route.selectedSkill!));
   await assert.rejects(access(join(clone, 'artifacts')));
   assert.match(await readFile(join(clone, '.agents/skills/flow-auth/SKILL.md'), 'utf8'), /auth-state.json/);
   await syncSiteKnowledge(root, dir);
@@ -123,4 +140,15 @@ test('legacy acronym namespace migrates once and keeps curated notes', async t =
   assert.equal(await readFile(join(root, '.agents/skills/flow-project/references/notes.md'), 'utf8'), 'Reviewed notes');
   await assert.rejects(access(old));
   assert.equal((await registerSite(root, 'flow.google.com')).namespace, 'flow');
+});
+
+test('routing prefers verified API, respects UI requests and stops ambiguous writes', () => {
+  const verified = executionSchema.parse({ api: 'verified', captcha: 'not-observed', browser: 'verified', effect: 'write' });
+  assert.equal(chooseRoute(verified).mode, 'api');
+  assert.equal(chooseRoute(verified, 'browser').mode, 'browser');
+  assert.equal(chooseRoute(verified, 'api', 'verification-required').mode, 'browser');
+  assert.equal(chooseRoute(verified, 'auto', 'auth-required').action, 'refresh-auth');
+  assert.equal(chooseRoute(verified, 'auto', 'ambiguous-write').action, 'verify-before-retry');
+  assert.equal(chooseRoute({ ...verified, captcha: 'unknown' }).mode, 'browser');
+  assert.equal(chooseRoute({ ...verified, api: 'blocked' }).mode, 'browser');
 });

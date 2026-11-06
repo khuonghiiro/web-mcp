@@ -1,37 +1,251 @@
 [
   {
     "id": "list-projects",
-    "title": "Liệt kê dự án Flow",
-    "description": "Liệt kê và tìm dự án trên flow.google.com bằng API hoặc UI; dùng khi cần chọn dự án trước thao tác tiếp theo.",
-    "inputs": {"filter": "Từ khóa tên dự án nếu người dùng yêu cầu; lọc kết quả đã đọc, chưa xác minh tham số lọc phía server."},
-    "rpcIds": ["UpteDb"],
-    "api": ["POST endpoint batchexecute với query rpcids=UpteDb. Xem query/form/body schema theo RPC trong api.json; các trường at, f.sid và cookie lấy từ phiên local mới.", "f.req là chuỗi JSON; envelope[0][0][0] là RPC ID và envelope[0][0][1] là chuỗi JSON args. Không gán ý nghĩa cho các phần tử args chưa kiểm chứng; lấy mẫu cấu trúc hiện hành khi mở danh sách trên UI.", "Response có thể có prefix chống XSSI và khung nhiều dòng. Đọc các dòng JSON chứa wrb.fr, tìm phần tử có RPC ID UpteDb rồi JSON.parse payload string. Không coi HTTP 200 là đủ.", "Chưa xác minh contract phân trang. Nếu kết quả chưa đủ, dùng UI cuộn danh sách để quan sát request trang tiếp theo trước khi tuyên bố đã lấy toàn bộ."],
-    "browser": ["Đi tới https://flow.google.com/ và inspect; nếu ở trang đăng nhập thì thực hiện flow:auth.", "Đọc các card/link dự án hiện có, lấy tên và href bằng studio_extract với selector vừa quan sát. Không click Dự án mới khi chỉ yêu cầu liệt kê.", "Nếu danh sách tải dần, cuộn từng đợt và gộp theo ID/link; dừng khi không còn dự án mới hoặc đã đủ phạm vi yêu cầu.", "Muốn mở dự án: chọn đúng tên/ID người dùng chỉ định từ danh sách; inspect lại sau khi click."],
-    "success": ["Trả danh sách tên và link dự án cùng phạm vi đã đọc; không tiết lộ cookie/token.", "Phân biệt danh sách rỗng hợp lệ với lỗi xác thực hoặc UI chưa tải."],
-    "verification": "RPC danh sách và UI đã quan sát; contract phân trang chưa kiểm chứng."
+    "title": "List Flow projects",
+    "description": "List and filter projects on flow.google.com via verified local API or browser UI before selecting a target project.",
+    "inputs": {
+      "limit": "Max projects to fetch (default 21 in observed RPC).",
+      "filter": "Optional client-side title/ID substring filter."
+    },
+    "rpcIds": [
+      "UpteDb"
+    ],
+    "api": [
+      "Run `node .agents/skills/flow-project/references/api-client.mjs list-projects [--limit 21]` or call `listProjects()` from `api-client.mjs`.",
+      "Underlying RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=UpteDb` (inherits shared batchexecute query/form parameterGroup in `api.json`).",
+      "Args payload in `f.req` (`envelope[0][0][1]`): `[\"projects/*\", 21, null, null, null, null, [1]]`. Decoded `wrb.fr` frame returns array `data[0]` where each item has `item[0]` (project UUID) and `item[1][0]` (project title).",
+      "If local cookies or `at` token are expired (`AUTH_REQUIRED`), attach browser via `flow:auth` to refresh."
+    ],
+    "browser": [
+      "Navigate to `https://flow.google.com/` and call `studio_inspect`; if redirected to Google login, run `flow:auth`.",
+      "Extract project cards/links (`a[href^=\"/project/\"]`) using `studio_extract` to read titles and project UUIDs. Do not click the create button when only listing.",
+      "Scroll incrementally if additional projects need to load."
+    ],
+    "success": [
+      "Returns project IDs, titles, and `/project/<id>` URLs without leaking cookies or tokens.",
+      "Distinguishes an empty project list from expired auth or unloaded UI."
+    ],
+    "verification": "Verified standalone API execution (`UpteDb`) and browser UI extraction on 2026-11-06.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "read",
+      "evidence": "2026-11-06: standalone UpteDb call via api-client.mjs returned decoded project list including known test project without CAPTCHA challenge."
+    }
   },
   {
     "id": "create-project",
-    "title": "Tạo dự án Flow",
-    "description": "Tạo dự án mới trên flow.google.com bằng API hoặc nút Dự án mới; dùng khi người dùng yêu cầu tạo dự án.",
-    "inputs": {"name": "Tên dự án mong muốn. API đã xác minh vị trí args[1][1][0]; UI có thể tạo với tên mặc định."},
-    "rpcIds": ["jHPbke", "UpteDb"],
-    "workflowNames": ["create_project_browser"],
-    "api": ["Endpoint POST /_/AiSandboxAngularFrontend/data/batchexecute, query rpcids=jHPbke, form application/x-www-form-urlencoded gồm f.req và at theo capture hiện hành. Cookie, at, f.sid và cấu hình runtime chỉ lấy local.", "Giải mã form.f.req thành envelope; JSON.parse(envelope[0][0][1]) thành args; thay args[1][1][0] bằng name; JSON.stringify args trở lại envelope[0][0][1], rồi stringify envelope và URL-encode form. Các trường chưa biết giữ theo request hiện hành, không hardcode từ máy khác.", "Đọc frame wrb.fr của jHPbke rồi JSON.parse phần payload; lần thử thành công trả project ID ở data[0], tên ở data[1][0]. Kiểm tra kiểu dữ liệu trước khi dùng vì contract có thể thay đổi.", "Gọi flow:list-projects để xác minh ID mới có trong danh sách. Nếu timeout hoặc response mơ hồ, kiểm tra danh sách trước khi tạo lại để tránh trùng dự án."],
-    "browser": ["Từ trang danh sách, inspect tìm nút Dự án mới. Selector từng ghi: button[aria-label='addDự án mới']; chỉ dùng nếu còn khớp đúng nút hiện hành.", "Click một lần và chờ URL/DOM của trang dự án; inspect lại. Không dựa vào wait body để khẳng định đã tạo thành công.", "Nếu UI dùng tên mặc định, chỉ đổi tên khi tìm được control phù hợp và xác minh bước đó; không giả định click Dự án mới đã dùng name.", "Lấy project URL và tên hiển thị; xác minh lại trong danh sách nếu cần."],
-    "success": ["Có project ID/URL mới và được xác nhận trên UI hoặc RPC danh sách.", "Báo rõ tên thực tế; không khẳng định đổi tên UI thành công nếu chưa kiểm chứng."],
-    "verification": "API tạo dự án đã chạy thành công và kiểm tra bằng RPC danh sách; thao tác UI Dự án mới đã quan sát."
+    "title": "Create a Flow project",
+    "description": "Create a new project on flow.google.com via verified API (`jHPbke`) or browser UI, with support for follow-up renaming (`o8DA4`).",
+    "inputs": {
+      "name": "Desired project title (mapped to `args[1][1][0]` in `jHPbke`, or applied via `flow:rename-project` after UI creation)."
+    },
+    "rpcIds": [
+      "jHPbke",
+      "o8DA4",
+      "UpteDb"
+    ],
+    "workflowNames": [
+      "create_project_browser"
+    ],
+    "api": [
+      "Run `node .agents/skills/flow-project/references/api-client.mjs create-project --name \"<title>\"` or import `createProject({ name })` from `api-client.mjs`.",
+      "Underlying RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=jHPbke` using local cookies and `at` token.",
+      "Args payload in `f.req` (`envelope[0][0][1]`): `[\"projects/*\", [null, [name]], [null, 22]]`. Decoded `wrb.fr` response returns new `projectId` at `data[0]` and title at `data[1][0]`.",
+      "Reusable composition: after creating a project (or if UI creation assigns a default timestamp title), call `renameProject({ projectId, name })` (`RPC o8DA4`) to set or update the title without recreating the project.",
+      "Confirm creation via `flow:list-projects` if network response is interrupted; never retry blind writes."
+    ],
+    "browser": [
+      "On `https://flow.google.com/`, inspect and click the new project button (`button[aria-label='addDự án mới']` or localized equivalent) once.",
+      "Wait and re-inspect until URL transitions to `/project/<id>`.",
+      "If UI creates a default timestamp name and a custom `name` was requested, either call `flow:api-rename-project` with the new `<id>` or edit `flow-editable-text input` in the header and press `Enter`."
+    ],
+    "success": [
+      "Returns the new `projectId` and `/project/<id>` URL confirmed by API response or list check.",
+      "Project title matches requested `name`."
+    ],
+    "verification": "Verified standalone API (`jHPbke`), follow-up rename (`o8DA4`), and browser creation flow.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "write",
+      "evidence": "Authenticated jHPbke RPC creates project with custom title and returns UUID; verified with UpteDb list and o8DA4 rename."
+    }
+  },
+  {
+    "id": "rename-project",
+    "title": "Rename an existing Flow project",
+    "description": "Reusable task to rename any Flow project by ID via verified API (`o8DA4`) or the project header editable input.",
+    "inputs": {
+      "projectId": "Target project UUID (e.g. from `create-project` or `list-projects`).",
+      "name": "New project title."
+    },
+    "rpcIds": [
+      "o8DA4"
+    ],
+    "api": [
+      "Run `node .agents/skills/flow-project/references/api-client.mjs rename-project --id <projectId> --name \"<newTitle>\"` or import `renameProject({ projectId, name })` from `api-client.mjs`.",
+      "Underlying RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=o8DA4` with `source-path=/project/<projectId>`.",
+      "Args payload in `f.req` (`envelope[0][0][1]`): `[\"projects/<projectId>\", [name], [[\"project_title\"]], [null, 22]]`.",
+      "Decoded `wrb.fr` response returns `[name]`, confirming the updated title immediately."
+    ],
+    "browser": [
+      "Inside `/project/<projectId>`, inspect header for `flow-editable-text input`.",
+      "Click the input, fill with `name`, and press `Enter` (`studio_press` with `key: 'Enter'`).",
+      "Re-inspect header title to confirm the new name is committed."
+    ],
+    "success": [
+      "API `wrb.fr` payload returns `[name]` or UI header reflects the updated title."
+    ],
+    "verification": "Captured from live UI interaction and verified standalone via `api-client.mjs` on 2026-11-06.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "write",
+      "evidence": "2026-11-06: captured RPC o8DA4 during live header rename and verified standalone execution via api-client.mjs."
+    }
+  },
+  {
+    "id": "open-project",
+    "title": "Open and inspect a Flow project",
+    "description": "Load a Flow project's metadata, scene/asset state, and model catalog via API (`ngNC2`, `Zzl0ze`, `HTrJv`) or open the project workspace in browser UI.",
+    "inputs": {
+      "projectId": "Project UUID or title from `flow:list-projects`."
+    },
+    "rpcIds": [
+      "ngNC2",
+      "Zzl0ze",
+      "HTrJv",
+      "yBhWQ"
+    ],
+    "api": [
+      "Run `node .agents/skills/flow-project/references/api-client.mjs get-project --id <projectId>` to fetch project metadata (`ngNC2`, args `[\"tools/PINHOLE/projects/<id>\"]`) and workspace state (`Zzl0ze`, args `[\"projects/<id>\", null, null, null, [1]]`).",
+      "Run `node .agents/skills/flow-project/references/api-client.mjs get-models` to fetch live model families, variant codes, aspect ratios, durations, and credit costs (`HTrJv` and `yBhWQ`)."
+    ],
+    "browser": [
+      "From `flow:list-projects`, click the project link `a[href=\"/project/<projectId>\"]`.",
+      "Poll `studio_inspect` until `url` is `/project/<projectId>` and the prompt editor (`flow-rich-text-editor`) is rendered (navigation is asynchronous).",
+      "If a changelog modal (`flow-change-log-modal`) appears, dismiss it before interacting with workspace controls."
+    ],
+    "success": [
+      "API returns decoded project metadata/state, or browser reaches `/project/<projectId>` with prompt editor ready and no blocking modal."
+    ],
+    "verification": "Verified both read RPCs (`ngNC2`, `Zzl0ze`, `HTrJv`, `yBhWQ`) and browser navigation on 2026-11-06.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "read",
+      "evidence": "2026-11-06: verified get-project and get-models via api-client.mjs and live browser navigation."
+    }
+  },
+  {
+    "id": "configure-generation",
+    "title": "Configure image/video model and dependent options",
+    "description": "Inspect or select generation mode (Image vs Video), model family, and model-dependent options (aspect ratio, output count x1-x4, resolution, duration) before submitting.",
+    "inputs": {
+      "mode": "`image` or `video`.",
+      "model": "Image model (`Nano Banana Pro` / `GEM_PIX_2`, `Nano Banana 2 Lite` / `HARBOR_SEAL`, `Nano Banana 2.1` / `BELUGA`) or Video model (`Omni 1.1 Flash` / `abra`, `Veo 3.1 - Lite` / `veo_3_1_lite`, `Veo 3.1 - Fast` / `veo_3_1_fast`, `Veo 3.1 - Quality` / `veo_3_1_quality`).",
+      "options": "Dependent parameters: Image supports aspect ratio (`16:9`, `4:3`, `1:1`, `3:4`, `9:16`) and count (`x1`..`x4`, 0 credits). Video supports sub-mode (`Frames` vs `Ingredients`), aspect ratio (`16:9` code `2`, `9:16` code `1`), resolution (`360p` vs `720p` for Omni 1.1 Flash), duration (`4s`/`6s`/`8s`/`10s` for Omni; `4s`/`6s`/`8s` for Veo 3.1), and count (`x1`..`x4`)."
+    },
+    "rpcIds": [
+      "HTrJv",
+      "yBhWQ"
+    ],
+    "api": [
+      "Changing settings in the UI mutates local Angular state without firing a save RPC; options are sent inside the generation RPC payload upon submission.",
+      "Use `node .agents/skills/flow-project/references/api-client.mjs get-models` (`HTrJv` / `yBhWQ`) to query the exact server-side dependency matrix (valid variant codes, supported aspect ratios, durations, max counts, and credit cost per variant) before constructing API payloads or driving UI."
+    ],
+    "browser": [
+      "Inside `/project/<id>`, click the settings trigger button (`button[aria-label='Điều kiện kích hoạt cài đặt']`) in `flow-base-prompt-box`.",
+      "Select mode toggle (`imageHình ảnh` or `videocamVideo`) and re-inspect immediately because Angular Material regenerates `mat-button-toggle` IDs and dependent controls.",
+      "To change model: click `flow-prompt-box-settings button` (`Chọn nhóm mô hình`), inspect overlay menu items, click the desired model, and re-inspect dependent toggles.",
+      "Select aspect ratio, resolution/duration (if video), and count (`x1`–`x4`). Verify the credit cost label (`flow-credit-cost-label`) and prompt summary chip before closing settings with `Escape`."
+    ],
+    "success": [
+      "Prompt summary bar reflects the target mode, model, aspect ratio, duration/resolution, and output count `x1`–`x4` without triggering generation."
+    ],
+    "verification": "Verified live UI option dependencies and `HTrJv` model catalog on 2026-11-06.",
+    "execution": {
+      "api": "observed",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "read",
+      "evidence": "2026-11-06: HTrJv RPC provides full model dependency catalog; UI setting toggles update client state before generation submit."
+    }
   },
   {
     "id": "generate-image",
-    "title": "Tạo ảnh trong dự án Flow",
-    "description": "Nhập prompt và tạo ảnh trên flow.google.com; hỗ trợ thao tác UI đã quan sát, giải thích RPC ảnh và giới hạn xác minh của API.",
-    "inputs": {"project": "Dự án người dùng chọn; nếu chưa có thì dùng flow:list-projects hoặc flow:create-project khi được yêu cầu.", "prompt": "Nội dung ảnh do người dùng yêu cầu; vị trí quan sát trong payload RPC: args[1][0][8][0][0][0].", "options": "Model, số ảnh và tỉ lệ nếu người dùng chỉ định. Đọc lựa chọn hiện hành trên UI; chưa xác minh đầy đủ ánh xạ API."},
-    "rpcIds": ["ogiZ0b"],
-    "workflowNames": ["generate_image"],
-    "api": ["POST batchexecute với rpcids=ogiZ0b. Xem schema form f.req/at và tuple JSON trong api.json; payload args là JSON nằm ở envelope[0][0][1]. Vị trí prompt nêu trên đã đối chiếu kiểu string trong capture.", "Các UUID, seed, model/config và context khác phải lấy từ thao tác hiện hành; chưa đủ bằng chứng gán tên cho mọi vị trí tuple. Không gửi ID của tài khoản đã cào trước.", "API ảnh độc lập chưa được xác nhận dùng được: thử thiếu dữ liệu xác minh trả HTTP 200 nhưng lỗi RPC 7 PUBLIC_ERROR_UNUSUAL_ACTIVITY. Không tự tạo/giả token, không xem token dài là cấu hình cố định.", "Nếu người dùng muốn API, ghi một lần tạo hợp lệ qua website rồi đối chiếu request/response. Khi còn phụ thuộc xác minh website, báo giới hạn và dùng UI nếu phù hợp yêu cầu."],
-    "browser": ["Mở đúng dự án và inspect, chọn chế độ ảnh thay vì video khi UI có lựa chọn. Không bắt đầu nhập prompt ở trang danh sách.", "Tìm trình soạn thảo contenteditable trong flow-rich-text-editor bằng studio_inspect. Dùng selector được trả về và studio_fill với parameter=prompt; kiểm tra nội dung đã nhập. Không dùng textarea giả định.", "Chọn model/tỉ lệ/số ảnh từ các control quan sát được theo yêu cầu, sau đó tìm nút bắt đầu tạo. Selector từng ghi: button[aria-label='Bắt đầu tạo']; kiểm tra lại ngôn ngữ và trạng thái enabled.", "Click gửi một lần, theo dõi tiến trình và lỗi bằng inspect. Nếu yêu cầu xác minh, để người dùng hoàn thành trên website rồi kiểm tra lại trạng thái; không bấm tạo liên tục.", "Chờ card ảnh hoàn tất; đọc kết quả thực tế và link nếu có. Selector img[alt*='generated'], div.image-result trong bản ghi cũ chưa được chứng minh ổn định, không dùng làm điều kiện thành công duy nhất."],
-    "success": ["UI hiển thị ảnh hoàn tất trong đúng dự án, không còn pending hoặc lỗi.", "Đối chiếu số ảnh/kích thước nếu UI cung cấp. HTTP 200 hoặc một ảnh thumbnail cũ không chứng minh tạo ảnh mới thành công."],
-    "verification": "Tạo qua UI từng thành công 1 ảnh 1024×1024; API độc lập thiếu xác minh thất bại. Workflow selector cần inspect lại trước khi replay."
+    "title": "Generate images in a Flow project",
+    "description": "Submit an image prompt with model/aspect/count options in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
+    "inputs": {
+      "projectId": "Target project UUID.",
+      "prompt": "Image generation prompt text.",
+      "options": "Optional model (`GEM_PIX_2`, `HARBOR_SEAL`, `BELUGA`), aspect ratio (`16:9`, `4:3`, `1:1`, `3:4`, `9:16`), and count (`x1`–`x4`)."
+    },
+    "rpcIds": [
+      "ogiZ0b"
+    ],
+    "workflowNames": [
+      "generate_image"
+    ],
+    "api": [
+      "Observed RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=ogiZ0b`.",
+      "Payload dependency mapping in `f.req` (`args = JSON.parse(envelope[0][0][1])`): `args[1]` is an array of generation items (length = output count `1..4`, or repeated entries per image); for each item `item = args[1][i]`: `item[3]` is random 32-bit integer seed, `item[4]` is aspect ratio enum (`1` = 1:1 square observed), `item[5]` is model code (`\"GEM_PIX_2\"`, `\"HARBOR_SEAL\"`, or `\"BELUGA\"`), `item[7][5]` is `projectId`, `item[7][10][0]` is the reCAPTCHA Enterprise token, and `item[8][0][0][0]` is the prompt string.",
+      "reCAPTCHA Enterprise gate: Flow loads `https://www.google.com/recaptcha/enterprise.js?trustedtypes=true&render=6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV` and attaches a single-use browser-minted token at `args[1][i][7][10][0]` and `args[3][10][0]`. Standalone API replay without a live browser-minted token returns HTTP 200 with RPC error `7 PUBLIC_ERROR_UNUSUAL_ACTIVITY`.",
+      "Therefore, always route `generate-image` to `flow:browser-generate-image` so the browser executes `grecaptcha.enterprise.execute(...)` natively upon clicking submit."
+    ],
+    "browser": [
+      "Open `/project/<projectId>` (`flow:open-project`) and configure model/aspect/count if needed (`flow:configure-generation`).",
+      "Inspect `flow-rich-text-editor` to get the `[contenteditable=\"true\"]` selector, then call `studio_fill` with `parameter: \"prompt\"` and verify text insertion.",
+      "Inspect and click the submit button (`flow-generate-icon-button button`, `aria-label=\"Bắt đầu tạo\"`) once.",
+      "Wait and poll `studio_inspect` / `studio_network` until `ogiZ0b` completes and the generated image card renders in the project grid."
+    ],
+    "success": [
+      "New image card finishes rendering in `/project/<projectId>` matching the requested prompt and count, with no RPC 7 error banner."
+    ],
+    "verification": "Browser generation verified (1024x1024 image created); standalone API confirmed blocked by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
+    "execution": {
+      "api": "blocked",
+      "captcha": "required",
+      "browser": "verified",
+      "effect": "write",
+      "evidence": "Browser UI natively mints reCAPTCHA Enterprise token (sitekey 6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV) and succeeds; standalone API returns RPC 7 PUBLIC_ERROR_UNUSUAL_ACTIVITY."
+    }
+  },
+  {
+    "id": "find-assets",
+    "title": "Search and filter project assets",
+    "description": "Search and filter generated images, videos, scenes, and characters inside a Flow project workspace.",
+    "inputs": {
+      "query": "Optional search keyword.",
+      "filters": "Asset type (Image, Video, Collection, Scene, Character), aspect ratio, creation/upload/favorite state, duration (`4s`–`10s`), resolution (`720p`/`360p`), or sort order."
+    },
+    "rpcIds": [
+      "Zzl0ze"
+    ],
+    "api": [
+      "Initial project assets are returned in `Zzl0ze` (`get-project` in `api-client.mjs`). Opening the filter menu and toggling filters on an empty project updates client view state without firing a separate search RPC.",
+      "Use `getProject({ projectId })` in `api-client.mjs` to read raw project state via API, or use the browser UI filter bar."
+    ],
+    "browser": [
+      "Inside `/project/<projectId>`, inspect `flow-search-bar` for the search input and filter button (`Các lựa chọn lọc và sắp xếp`).",
+      "Fill search input if `query` is provided, or click the filter button to open the filter popover.",
+      "Match checkbox/radio options by surrounding section text before clicking (Angular Material checkbox IDs `#mat-mdc-checkbox-*` are dynamic). Use the reset button (`Xoá tất cả bộ lọc`) only to clear filters."
+    ],
+    "success": [
+      "Returns matching asset cards/counts and clearly reports active filters."
+    ],
+    "verification": "Verified filter panel controls and `Zzl0ze` project state RPC on 2026-11-06.",
+    "execution": {
+      "api": "observed",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "read",
+      "evidence": "Project state RPC Zzl0ze and browser filter controls verified on 2026-11-06."
+    }
   }
 ]

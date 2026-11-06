@@ -1,4 +1,4 @@
 <!-- web-to-mcp:managed -->
 # flow.google.com
 
-Tra .agents/sites.json theo hostname chính xác; bắt đầu với .agents/skills/flow-project/SKILL.md để chọn skill flow:* theo nghiệp vụ. Máy mới hoặc hết phiên: flow:auth. Người dùng chọn UI: theo nhánh browser của task; không bắt buộc endpoint. Secrets và dữ liệu người dùng chỉ ở artifacts/flow.google.com/ đã gitignore. Không commit/push auth, session hay HAR.
+Resolve exact hostname in .agents/sites.json and read .agents/skills/flow-project/SKILL.md to select flow:* skills. Use flow:api-<task> when API is verified without CAPTCHA; use flow:browser-<task> when CAPTCHA/verification is required or user requests UI. Refresh expired auth via flow:auth. Keep secrets and sessions strictly in gitignored artifacts/flow.google.com/.

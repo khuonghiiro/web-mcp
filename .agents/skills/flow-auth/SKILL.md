@@ -1,20 +1,20 @@
 ---
 name: flow:auth
-description: "Khởi tạo hoặc làm mới phiên đăng nhập flow.google.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực."
+description: "Initialize or refresh local authentication for flow.google.com; use on fresh clones or expired sessions."
 ---
 
 <!-- web-to-mcp:managed -->
 # flow:auth
 
-Website: https://flow.google.com/. Chỉ dùng cho hostname này.
+Website: https://flow.google.com/ (exact hostname scope).
 
-1. Đọc README.md của repository; chạy `setup.bat` nếu chưa cài môi trường. Chạy `run.bat` → Chuẩn bị kết nối AI; nạp MCP Studio trong AI client. Cài extension từ thư mục `extension`.
-2. Mở https://flow.google.com/ trong Chrome/Edge của người dùng. Người dùng đăng nhập tài khoản của họ và hoàn thành xác minh khi website yêu cầu. Không dùng phiên từ người commit code.
-3. Trên đúng tab, bật “Tự kết nối AI”. Gọi `studio_start` với `{name: "flow-session-<thời-gian>", url: "https://flow.google.com/", endpoint: "extension"}`. Nếu MCP tool chưa có, cấu hình MCP theo README trước; không giả định tên skill là tool.
-4. Gọi `studio_inspect`, xác minh đã vào đúng tài khoản/website bằng UI. Thực hiện một thao tác đọc phù hợp để ghi request mới; kiểm tra `studio_network` và trạng thái ứng dụng. Không kết luận đã đăng nhập chỉ từ HTTP 200.
-5. Với tác vụ UI, giữ Studio đang kết nối; tiếp tục dùng phiên trên tab. Với API, lưu bằng `studio_close` để có `artifacts/flow.google.com/<session>/auth-state.json`, `auth.json`, `traffic.har`. Nếu cần thao tác tiếp, khởi tạo phiên Studio mới.
-6. API cần cookie phù hợp origin; bearer/CSRF/form token phải lấy từ request hiện hành trong capture local, không đoán từ localStorage. Chỉ lưu header vào `artifacts/flow.google.com/<session>/auth-headers.json` dạng object `{ "https://<API-origin>": { "<header-name>": "<giá-trị-local>" } }`. Không in giá trị vào chat/log/skill.
-7. Nếu dùng MCP sinh ra, đặt `MCP_AUTH_STATE` và khi cần `MCP_AUTH_HEADERS_FILE` tới đường dẫn tuyệt đối trên máy này. Runtime dùng cookie/header, không tự lấy CSRF trong body hay giải mã RPC. Theo skill tác vụ để xác định tham số động.
-8. Khi 401/403, chuyển về login, lỗi CSRF/session hoặc RPC từ chối: kiểm tra UI, làm mới phiên và ghi lại request. Không lặp mutation nếu chưa biết lần trước thành công hay chưa. Nếu website yêu cầu xác minh, hoàn thành trên website rồi kiểm tra lại.
+1. Read repository `README.md`; run `setup.bat` if needed. Start MCP Studio and load the extension from `extension/`.
+2. Open https://flow.google.com/ in the user's Chrome/Edge browser. Complete login and any security challenge on the website.
+3. On the target tab, enable "Auto-connect AI" and call `studio_start` with `{name: "flow-session-<timestamp>", url: "https://flow.google.com/", endpoint: "extension"}`.
+4. Call `studio_inspect` to verify the authenticated UI, then trigger a read action so `studio_network` captures fresh requests and tokens. Do not assume HTTP 200 alone proves login.
+5. For UI tasks, keep Studio connected. For API tasks, call `studio_close` to persist `artifacts/flow.google.com/<session>/auth-state.json`, `auth.json`, and `traffic.har`.
+6. API calls require origin-matching cookies plus fresh bearer/CSRF/form tokens from local capture. Store headers only in `artifacts/flow.google.com/<session>/auth-headers.json` as `{ "https://<API-origin>": { "<header>": "<local-value>" } }`. Never print secrets in chat or commit them.
+7. For generated MCP servers, set `MCP_AUTH_STATE` and `MCP_AUTH_HEADERS_FILE` to local absolute paths.
+8. On 401/403, login redirect, expired token, or RPC auth rejection: connect browser via Studio, refresh the session on the web page, and re-capture auth/cookies. Never retry ambiguous write mutations before checking the UI.
 
-Auth, session, HAR, DOM, ảnh chụp và dữ liệu người dùng chỉ ở `artifacts/flow.google.com/` đã gitignore. Máy mới không có những file này là bình thường. Kiểm tra `git check-ignore <file>` trước khi lưu secret; không commit/push chúng.
+All auth state, HAR, DOM, and user data stay in gitignored `artifacts/flow.google.com/`.

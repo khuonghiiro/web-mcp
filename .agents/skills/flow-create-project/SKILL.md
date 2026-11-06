@@ -1,38 +1,44 @@
 ---
 name: flow:create-project
-description: "Tạo dự án mới trên flow.google.com bằng API hoặc nút Dự án mới; dùng khi người dùng yêu cầu tạo dự án."
+description: "Create a new project on flow.google.com via verified API (`jHPbke`) or browser UI, with support for follow-up renaming (`o8DA4`)."
 ---
 
 <!-- web-to-mcp:managed -->
 # flow:create-project
 
-Website: https://flow.google.com/. Chỉ dùng cho hostname này.
+Website: https://flow.google.com/ (exact hostname scope).
 
-## Tạo dự án Flow
+## Create a Flow project
 
-Trạng thái kiểm chứng: API tạo dự án đã chạy thành công và kiểm tra bằng RPC danh sách; thao tác UI Dự án mới đã quan sát.
+Verification: Verified standalone API (`jHPbke`), follow-up rename (`o8DA4`), and browser creation flow.
 
-Đầu vào:
-- `name`: Tên dự án mong muốn. API đã xác minh vị trí args[1][1][0]; UI có thể tạo với tên mặc định.
+## Execution Routing
+Default: **api** — Verified API with no observed CAPTCHA gate; run via local auth/cookies.
+Call `studio_site_route` with URL and task `create-project`. Use API directly when `api=verified` and `captcha=not-observed`; use browser when CAPTCHA/verification is required or when the user requests UI.
+- API skill: [flow:api-create-project](../flow-api-create-project/SKILL.md)
+- Browser skill: [flow:browser-create-project](../flow-browser-create-project/SKILL.md)
+- Expired auth: refresh via [flow:auth](../flow-auth/SKILL.md). Ambiguous write: inspect UI before retrying.
 
-Chuẩn bị: [flow:auth](../flow-auth/SKILL.md). Nếu người dùng chọn UI, dùng nhánh UI bên dưới.
+Inputs:
+- `name`: Desired project title (mapped to `args[1][1][0]` in `jHPbke`, or applied via `flow:rename-project` after UI creation).
 
-## API
-- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `jHPbke`; schema ID `2b8f637713af` trong [hợp đồng API](../flow-project/references/api.json).
-- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `UpteDb`; schema ID `6445f9493e1d` trong [hợp đồng API](../flow-project/references/api.json).
-- Endpoint POST /_/AiSandboxAngularFrontend/data/batchexecute, query rpcids=jHPbke, form application/x-www-form-urlencoded gồm f.req và at theo capture hiện hành. Cookie, at, f.sid và cấu hình runtime chỉ lấy local.
-- Giải mã form.f.req thành envelope; JSON.parse(envelope[0][0][1]) thành args; thay args[1][1][0] bằng name; JSON.stringify args trở lại envelope[0][0][1], rồi stringify envelope và URL-encode form. Các trường chưa biết giữ theo request hiện hành, không hardcode từ máy khác.
-- Đọc frame wrb.fr của jHPbke rồi JSON.parse phần payload; lần thử thành công trả project ID ở data[0], tên ở data[1][0]. Kiểm tra kiểu dữ liệu trước khi dùng vì contract có thể thay đổi.
-- Gọi flow:list-projects để xác minh ID mới có trong danh sách. Nếu timeout hoặc response mơ hồ, kiểm tra danh sách trước khi tạo lại để tránh trùng dự án.
+## API Branch
+- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `jHPbke` (inherits `params-82e85614`); schema `2b8f637713af` in [API contract](../flow-project/references/api.json).
+- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `UpteDb` (inherits `params-82e85614`); schema `6445f9493e1d` in [API contract](../flow-project/references/api.json).
+- `POST https://flow.google.com/_/AiSandboxAngularFrontend/data/batchexecute`, RPC `o8DA4` (inherits `params-82e85614`); schema `be04875c19bb` in [API contract](../flow-project/references/api.json).
+- Run `node .agents/skills/flow-project/references/api-client.mjs create-project --name "<title>"` or import `createProject({ name })` from `api-client.mjs`.
+- Underlying RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=jHPbke` using local cookies and `at` token.
+- Args payload in `f.req` (`envelope[0][0][1]`): `["projects/*", [null, [name]], [null, 22]]`. Decoded `wrb.fr` response returns new `projectId` at `data[0]` and title at `data[1][0]`.
+- Reusable composition: after creating a project (or if UI creation assigns a default timestamp title), call `renameProject({ projectId, name })` (`RPC o8DA4`) to set or update the title without recreating the project.
+- Confirm creation via `flow:list-projects` if network response is interrupted; never retry blind writes.
 
-## UI
-1. Từ trang danh sách, inspect tìm nút Dự án mới. Selector từng ghi: button[aria-label='addDự án mới']; chỉ dùng nếu còn khớp đúng nút hiện hành.
-2. Click một lần và chờ URL/DOM của trang dự án; inspect lại. Không dựa vào wait body để khẳng định đã tạo thành công.
-3. Nếu UI dùng tên mặc định, chỉ đổi tên khi tìm được control phù hợp và xác minh bước đó; không giả định click Dự án mới đã dùng name.
-4. Lấy project URL và tên hiển thị; xác minh lại trong danh sách nếu cần.
+## Browser Branch
+1. On `https://flow.google.com/`, inspect and click the new project button (`button[aria-label='addDự án mới']` or localized equivalent) once.
+2. Wait and re-inspect until URL transitions to `/project/<id>`.
+3. If UI creates a default timestamp name and a custom `name` was requested, either call `flow:api-rename-project` with the new `<id>` or edit `flow-editable-text input` in the header and press `Enter`.
 
-## Kiểm tra kết quả
-- Có project ID/URL mới và được xác nhận trên UI hoặc RPC danh sách.
-- Báo rõ tên thực tế; không khẳng định đổi tên UI thành công nếu chưa kiểm chứng.
+## Success Criteria
+- Returns the new `projectId` and `/project/<id>` URL confirmed by API response or list check.
+- Project title matches requested `name`.
 
-Nguồn mô tả đã rà soát: [tasks.json](../flow-project/references/tasks.json). Không tự ghi đè file này khi cào bổ sung.
+Reviewed task source: [tasks.json](../flow-project/references/tasks.json).

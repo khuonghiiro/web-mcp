@@ -1,18 +1,18 @@
 ---
 name: chatgpt:api
-description: "Tra endpoint và schema tham số của chatgpt.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ."
+description: "Inspect endpoints, inherited parameter groups, and reusable API execution for chatgpt.com."
 ---
 
 <!-- web-to-mcp:managed -->
 # chatgpt:api
 
-Website: https://chatgpt.com/. Chỉ dùng cho hostname này.
+Website: https://chatgpt.com/ (exact hostname scope).
 
-Đọc [chatgpt:auth](../chatgpt-auth/SKILL.md) nếu máy này chưa có phiên hợp lệ. Đọc [hợp đồng API](../chatgpt-project/references/api.json); mỗi entry có origin, method, path, rpcId (nếu có), parameters theo query/header/form, schema body và trạng thái quan sát.
+Read [chatgpt:auth](../chatgpt-auth/SKILL.md) if local auth is missing or expired. Read [API contract](../chatgpt-project/references/api.json); endpoints inherit shared query/header/form parameters via `parameterGroup` from `parameterGroups` to avoid duplicate definitions.
+Reusable local API runner: `node .agents/skills/chatgpt-project/references/api-client.mjs` (loads local cookies/auth tokens from `artifacts/chatgpt.com/<latest-session>/` automatically).
 
-- `localOnly` / `local-credential`: giá trị phải lấy từ phiên hiện hành, không lấy từ Git.
-- `tuple` là vị trí trong array; `decodedJson` là JSON nằm bên trong một chuỗi. Không gửi schema thay cho payload.
-- `required: unknown`: một lần quan sát không chứng minh trường bắt buộc. Không có example/default từ dữ liệu người dùng.
-- Tìm skill tác vụ trong [danh mục](../chatgpt-project/references/skills.json) để biết ý nghĩa tham số và kiểm tra thành công. Không tự gán ý nghĩa cho tuple chưa xác minh.
-- Đọc evidence local khi còn thiếu giá trị cấu hình/runtime hoặc cấu trúc request. Nếu mới pull code chưa có evidence, dùng [chatgpt:auth](../chatgpt-auth/SKILL.md), ghi thao tác UI tương ứng rồi phân tích. Chọn API origin chính xác; không gửi cookie website sang origin khác.
-- Kiểm tra payload lỗi RPC và UI sau thao tác. Không tự retry yêu cầu tạo/xóa nếu kết quả chưa rõ. Người dùng yêu cầu dùng UI thì đi theo chatgpt:browse hoặc nhánh browser của skill tác vụ, không bắt buộc API.
+- `localOnly` / `local-credential`: values must be loaded from the latest local session under `artifacts/chatgpt.com/`, never from Git.
+- `tuple`: positional array elements; `decodedJson`: nested JSON encoded inside a string. Send concrete payload values, not schema objects.
+- `required: unknown`: single-capture observation does not prove required status.
+- Check task skills in [skills.json](../chatgpt-project/references/skills.json) for verified parameter positions, dependent configurations (e.g., model vs count/aspect/duration), and reusable follow-up calls.
+- On auth expiry, switch to [chatgpt:auth](../chatgpt-auth/SKILL.md) to refresh cookies/tokens from the browser. On CAPTCHA / `PUBLIC_ERROR_UNUSUAL_ACTIVITY`, switch to the task's browser skill.

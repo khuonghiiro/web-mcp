@@ -21,6 +21,10 @@ Máy mới chỉ có source và skill, không có session. AI bắt đầu với
 
 Bộ sinh tạo contract tham số từ capture và skill cho workflow được ghi. Nó **không có LLM tự hiểu nghiệp vụ**: AI đang làm việc phải kiểm chứng tên field/tuple, selector, kết quả rồi ghi `tasks.json`. Các task được rà soát sẽ thay skill workflow tổng quát tương ứng. Nếu người dùng muốn UI, theo nhánh browser của task, không buộc gọi API.
 
+Mỗi task sinh hai skill thực thi `flow:api-<task>` và `flow:browser-<task>` cùng skill chọn nhánh `flow:<task>`. Metadata `execution` ghi trạng thái API, CAPTCHA, UI, read/write và bằng chứng. `studio_site_route` ưu tiên API khi `api=verified` và `captcha=not-observed`; đây là kết luận từ quan sát, không bảo đảm CAPTCHA sẽ không xuất hiện sau này. Tín hiệu `verification-required` chuyển browser, `auth-required` làm mới phiên, `ambiguous-write` kiểm tra UI trước khi gửi lại. Yêu cầu UI cụ thể luôn được ưu tiên.
+
+Studio lưu `action-trace.json` trước/sau từng thao tác, bỏ giá trị người dùng nhập và ghi request mới trong khoảng đó. Snapshot/response có thể đến chậm; trace ghi rõ chỉ là tương quan thời gian, phải kiểm tra UI và request hoàn tất để kết luận. Capture, trace, cookie và token vẫn local; chỉ contract và kiến thức đã rà soát được chia sẻ.
+
 `AGENTS.md` hướng dẫn AI tra đúng hostname trước khi dùng skill; `studio_site_guide` trả đường dẫn cần đọc. Tool `studio_start` cũng trả site guide. AI có thể đọc skill vừa sinh ngay; danh sách skill tích hợp của một số client chỉ cập nhật khi mở lại phiên. Namespace YAML không tự tạo thêm một MCP tool cùng tên.
 
 ```powershell

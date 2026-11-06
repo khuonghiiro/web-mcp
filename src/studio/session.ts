@@ -26,8 +26,9 @@ export class StudioSession {
   captureSaved = false;
   target = '';
   finishRecording?: (path: string) => Promise<void>;
-  network: { method: string; origin: string; path: string; status: number }[] = [];
+  network: { method: string; origin: string; path: string; status: number; rpcId?: string }[] = [];
   workflows: Workflow[] = [];
+  actionTrace: { startedAt: string; completedAt?: string; step: Step; beforeUrl: string; afterUrl?: string; beforeSnapshot?: string; afterSnapshot?: string; outcome: string; requests?: unknown[] }[] = [];
   draft?: { startUrl: string; steps: Step[] };
   constructor(readonly root: string) {}
   current(): Page {
@@ -51,6 +52,7 @@ export class StudioSession {
       this.name = name; this.target = target.href; this.workflows = []; this.draft = undefined; this.network = [];
       this.active = true;
       this.captureSaved = false;
+      this.actionTrace = [];
       this.entries = []; this.runtimeErrors = [];
       this.extensionMode = endpoint === 'extension';
       if (this.extensionMode) return { ...await this.inspect(), site: await siteGuide(this.root, url), artifacts: this.dir };
@@ -64,7 +66,7 @@ export class StudioSession {
       this.page.on('pageerror', error => { if (this.runtimeErrors.length < 100) this.runtimeErrors.push(error.message); });
       this.page.on('response', response => {
         if (this.network.length >= 2000) return;
-        try { const url = new URL(response.url()); this.network.push({ method: response.request().method(), origin: url.origin, path: url.pathname, status: response.status() }); } catch { /* Non-HTTP response. */ }
+        try { const url = new URL(response.url()), rpc = url.searchParams.get('rpcids'); this.network.push({ method: response.request().method(), origin: url.origin, path: url.pathname, status: response.status(), ...(rpc && /^[a-zA-Z0-9]{1,16}$/.test(rpc) ? { rpcId: rpc } : {}) }); } catch { /* Non-HTTP response. */ }
       });
       if (this.page.url() !== target.href) await this.page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
       return { ...await inspectPage(this.page), site: await siteGuide(this.root, url), artifacts: this.dir };
@@ -72,7 +74,11 @@ export class StudioSession {
   }
   async inspect() { if (!this.active) throw new Error('Gọi studio_start trước.'); return this.extensionMode ? this.bridge.rpc('inspect') : inspectPage(this.current()); }
   async extract(selector: string) { if (!this.active) throw new Error('Gọi studio_start trước.'); return this.extensionMode ? this.bridge.rpc('extract', { selector }) : extractPage(this.current(), selector); }
-  async listNetwork() { return this.extensionMode ? this.bridge.rpc('network') : this.network; }
+  async listNetwork() {
+    if (!this.extensionMode) return this.network;
+    const har = harSchema.parse(await this.bridge.rpc('har'));
+    return har.log.entries.map(e => { const url = new URL(e.request.url), rpc = url.searchParams.get('rpcids'); return { method: e.request.method, origin: url.origin, path: url.pathname, status: e.response.status, ...(rpc && /^[a-zA-Z0-9]{1,16}$/.test(rpc) ? { rpcId: rpc } : {}) }; });
+  }
   async apiPreview(origin?: string) {
     if (!this.active) throw new Error('Gọi studio_start trước.');
     const har = this.extensionMode ? await this.bridge.rpc('har') : { log: { entries: this.entries } };
@@ -91,6 +97,26 @@ export class StudioSession {
     return { started: true, startUrl: snapshot.url, note: 'Các bước thành công sẽ được ghi. Giá trị nhập không lưu vào workflow; chúng trở thành tham số khi dùng lại.' };
   }
   async step(step: Step, value?: string) {
+    if (!this.active) throw new Error('Gọi studio_start trước.');
+    const before = await this.inspect();
+    const network = await this.listNetwork();
+    const trace: StudioSession['actionTrace'][number] = { startedAt: new Date().toISOString(), step, beforeUrl: before.url, outcome: 'started' };
+    this.actionTrace.push(trace);
+    const actionId = String(this.actionTrace.length).padStart(4, '0');
+    trace.beforeSnapshot = `actions/${actionId}-before.json`;
+    await writeJson(join(this.dir, trace.beforeSnapshot), before);
+    await writeJson(join(this.dir, 'action-trace.json'), { note: 'Temporal correlation only; background and delayed requests may fall outside action windows. Input values are omitted. A started/unknown write must be checked on the UI before retry.', actions: this.actionTrace });
+    try {
+      const result = await this.performStep(step, value);
+      trace.afterSnapshot = `actions/${actionId}-after.json`;
+      await writeJson(join(this.dir, trace.afterSnapshot), result);
+      trace.afterUrl = result.url; trace.completedAt = new Date().toISOString(); trace.outcome = 'completed';
+      trace.requests = (await this.listNetwork()).slice(network.length);
+      return result;
+    } catch (error) { trace.outcome = 'unknown-check-ui-before-retry'; trace.completedAt = new Date().toISOString(); throw error; }
+    finally { await writeJson(join(this.dir, 'action-trace.json'), { note: 'Temporal correlation, not proof of causality. Check delayed responses and final UI before claiming success. No input values stored.', actions: this.actionTrace }); }
+  }
+  private async performStep(step: Step, value?: string) {
     if (!this.active) throw new Error('Gọi studio_start trước.');
     if (this.draft && this.draft.steps.length >= 100) throw new Error('Tối đa 100 bước mỗi quy trình.');
     if (this.extensionMode) {

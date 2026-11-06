@@ -2,36 +2,126 @@
   {
     "name": "flow:auth",
     "path": ".agents/skills/flow-auth/SKILL.md",
-    "description": "Khởi tạo hoặc làm mới phiên đăng nhập flow.google.com trên máy hiện tại; dùng khi mới pull code hoặc gặp lỗi xác thực."
+    "description": "Initialize or refresh local authentication for flow.google.com; use on fresh clones or expired sessions."
   },
   {
     "name": "flow:api",
     "path": ".agents/skills/flow-api/SKILL.md",
-    "description": "Tra endpoint và schema tham số của flow.google.com; dùng khi cần chọn hoặc bổ sung API cho tác vụ."
+    "description": "Inspect endpoints, inherited parameter groups, and reusable API execution for flow.google.com."
   },
   {
     "name": "flow:browse",
     "path": ".agents/skills/flow-browse/SKILL.md",
-    "description": "Thao tác trực tiếp giao diện flow.google.com bằng phiên đăng nhập; dùng khi người dùng yêu cầu thao tác web thay vì API."
+    "description": "Operate flow.google.com directly in the logged-in browser when UI mode is requested or API is gated by CAPTCHA."
   },
   {
     "name": "flow:list-projects",
     "path": ".agents/skills/flow-list-projects/SKILL.md",
-    "description": "Liệt kê và tìm dự án trên flow.google.com bằng API hoặc UI; dùng khi cần chọn dự án trước thao tác tiếp theo."
+    "description": "List and filter projects on flow.google.com via verified local API or browser UI before selecting a target project."
+  },
+  {
+    "name": "flow:api-list-projects",
+    "path": ".agents/skills/flow-api-list-projects/SKILL.md",
+    "description": "Execute \"List Flow projects\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-list-projects",
+    "path": ".agents/skills/flow-browser-list-projects/SKILL.md",
+    "description": "Execute \"List Flow projects\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
   },
   {
     "name": "flow:create-project",
     "path": ".agents/skills/flow-create-project/SKILL.md",
-    "description": "Tạo dự án mới trên flow.google.com bằng API hoặc nút Dự án mới; dùng khi người dùng yêu cầu tạo dự án."
+    "description": "Create a new project on flow.google.com via verified API (`jHPbke`) or browser UI, with support for follow-up renaming (`o8DA4`)."
+  },
+  {
+    "name": "flow:api-create-project",
+    "path": ".agents/skills/flow-api-create-project/SKILL.md",
+    "description": "Execute \"Create a Flow project\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-create-project",
+    "path": ".agents/skills/flow-browser-create-project/SKILL.md",
+    "description": "Execute \"Create a Flow project\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:rename-project",
+    "path": ".agents/skills/flow-rename-project/SKILL.md",
+    "description": "Reusable task to rename any Flow project by ID via verified API (`o8DA4`) or the project header editable input."
+  },
+  {
+    "name": "flow:api-rename-project",
+    "path": ".agents/skills/flow-api-rename-project/SKILL.md",
+    "description": "Execute \"Rename an existing Flow project\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-rename-project",
+    "path": ".agents/skills/flow-browser-rename-project/SKILL.md",
+    "description": "Execute \"Rename an existing Flow project\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:open-project",
+    "path": ".agents/skills/flow-open-project/SKILL.md",
+    "description": "Load a Flow project's metadata, scene/asset state, and model catalog via API (`ngNC2`, `Zzl0ze`, `HTrJv`) or open the project workspace in browser UI."
+  },
+  {
+    "name": "flow:api-open-project",
+    "path": ".agents/skills/flow-api-open-project/SKILL.md",
+    "description": "Execute \"Open and inspect a Flow project\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-open-project",
+    "path": ".agents/skills/flow-browser-open-project/SKILL.md",
+    "description": "Execute \"Open and inspect a Flow project\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:configure-generation",
+    "path": ".agents/skills/flow-configure-generation/SKILL.md",
+    "description": "Inspect or select generation mode (Image vs Video), model family, and model-dependent options (aspect ratio, output count x1-x4, resolution, duration) before submitting."
+  },
+  {
+    "name": "flow:api-configure-generation",
+    "path": ".agents/skills/flow-api-configure-generation/SKILL.md",
+    "description": "Execute \"Configure image/video model and dependent options\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-configure-generation",
+    "path": ".agents/skills/flow-browser-configure-generation/SKILL.md",
+    "description": "Execute \"Configure image/video model and dependent options\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
   },
   {
     "name": "flow:generate-image",
     "path": ".agents/skills/flow-generate-image/SKILL.md",
-    "description": "Nhập prompt và tạo ảnh trên flow.google.com; hỗ trợ thao tác UI đã quan sát, giải thích RPC ảnh và giới hạn xác minh của API."
+    "description": "Submit an image prompt with model/aspect/count options in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`)."
+  },
+  {
+    "name": "flow:api-generate-image",
+    "path": ".agents/skills/flow-api-generate-image/SKILL.md",
+    "description": "Execute \"Generate images in a Flow project\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-generate-image",
+    "path": ".agents/skills/flow-browser-generate-image/SKILL.md",
+    "description": "Execute \"Generate images in a Flow project\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:find-assets",
+    "path": ".agents/skills/flow-find-assets/SKILL.md",
+    "description": "Search and filter generated images, videos, scenes, and characters inside a Flow project workspace."
+  },
+  {
+    "name": "flow:api-find-assets",
+    "path": ".agents/skills/flow-api-find-assets/SKILL.md",
+    "description": "Execute \"Search and filter project assets\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-find-assets",
+    "path": ".agents/skills/flow-browser-find-assets/SKILL.md",
+    "description": "Execute \"Search and filter project assets\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
   },
   {
     "name": "flow:project",
     "path": ".agents/skills/flow-project/SKILL.md",
-    "description": "Chọn skill nghiệp vụ của flow.google.com: khởi tạo phiên, API hoặc thao tác trực tiếp UI; dùng khi bắt đầu làm việc với website này."
+    "description": "Route flow.google.com tasks between reusable local API execution and browser UI workflows."
   }
 ]

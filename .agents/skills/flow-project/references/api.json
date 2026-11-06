@@ -1,89 +1,81 @@
 {
   "domain": "flow.google.com",
-  "note": "Schema inferred from capture. Required fields and semantics need verification; no captured values.",
+  "note": "Schema inferred from capture. Shared parameter sets are deduplicated in parameterGroups and inherited via parameterGroup. Required fields and semantics need verification; no captured values.",
+  "parameterGroups": {
+    "params-82e85614": [
+      {
+        "name": "rpcids",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "source-path",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "bl",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "f.sid",
+        "location": "query",
+        "type": "string",
+        "localOnly": true,
+        "required": "unknown"
+      },
+      {
+        "name": "hl",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "_reqid",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "rt",
+        "location": "query",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "f.req",
+        "location": "form",
+        "type": "string",
+        "localOnly": false,
+        "required": "unknown"
+      },
+      {
+        "name": "at",
+        "location": "form",
+        "type": "string",
+        "localOnly": true,
+        "required": "unknown"
+      }
+    ]
+  },
   "endpoints": [
-    {
-      "id": "edd83135c545",
-      "origin": "https://flow.google.com",
-      "method": "GET",
-      "path": "/asb/{id}",
-      "parameters": [],
-      "statuses": [
-        200
-      ],
-      "verification": "observed-only"
-    },
     {
       "id": "2b8f637713af",
       "origin": "https://flow.google.com",
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
       "rpcId": "jHPbke",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -163,132 +155,8 @@
             }
           }
         }
-      }
-    },
-    {
-      "id": "9427b151fa2f",
-      "origin": "https://flow.google.com",
-      "method": "POST",
-      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
-      "rpcId": "mrlkwd",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
-      "statuses": [
-        200
-      ],
-      "verification": "observed-only",
-      "body": {
-        "mimeType": "application/x-www-form-urlencoded",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "f.req": {
-              "type": "string",
-              "decodedJson": {
-                "type": "array",
-                "tuple": [
-                  {
-                    "type": "array",
-                    "tuple": [
-                      {
-                        "type": "array",
-                        "tuple": [
-                          {
-                            "type": "string"
-                          },
-                          {
-                            "type": "string",
-                            "decodedJson": {
-                              "type": "array",
-                              "tuple": [
-                                {
-                                  "type": "string"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "type": "null"
-                          },
-                          {
-                            "type": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            "at": {
-              "type": "local-credential"
-            }
-          }
-        }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
       "id": "85eaf97ce791",
@@ -296,71 +164,7 @@
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
       "rpcId": "ngNC2",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -413,7 +217,8 @@
             }
           }
         }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
       "id": "e9d88ef704c2",
@@ -421,71 +226,7 @@
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
       "rpcId": "Zzl0ze",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -555,7 +296,8 @@
             }
           }
         }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
       "id": "6445f9493e1d",
@@ -563,71 +305,7 @@
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
       "rpcId": "UpteDb",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -703,79 +381,16 @@
             }
           }
         }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
-      "id": "a6d380585de7",
+      "id": "2a9f2d20c2fe",
       "origin": "https://flow.google.com",
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
-      "rpcId": "DTaVef",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "rpcId": "HTrJv",
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -803,11 +418,7 @@
                             "type": "string",
                             "decodedJson": {
                               "type": "array",
-                              "tuple": [
-                                {
-                                  "type": "integer"
-                                }
-                              ]
+                              "tuple": []
                             }
                           },
                           {
@@ -828,7 +439,66 @@
             }
           }
         }
-      }
+      },
+      "parameterGroup": "params-82e85614"
+    },
+    {
+      "id": "ffa8dd24e47b",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "yBhWQ",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": []
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
       "id": "d16e4c6d8d70",
@@ -836,71 +506,7 @@
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
       "rpcId": "ogiZ0b",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -1120,79 +726,16 @@
             }
           }
         }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     },
     {
-      "id": "a9ccab9aefe6",
+      "id": "be04875c19bb",
       "origin": "https://flow.google.com",
       "method": "POST",
       "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
-      "rpcId": "WuwhI",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
+      "rpcId": "o8DA4",
+      "parameters": [],
       "statuses": [
         200
       ],
@@ -1222,6 +765,17 @@
                               "type": "array",
                               "tuple": [
                                 {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                {
                                   "type": "array",
                                   "tuple": [
                                     {
@@ -1229,834 +783,19 @@
                                       "tuple": [
                                         {
                                           "type": "string"
-                                        },
-                                        {
-                                          "type": "array",
-                                          "tuple": [
-                                            {
-                                              "type": "string"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "integer"
-                                                },
-                                                {
-                                                  "type": "integer"
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "null"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "string"
-                                            }
-                                          ]
                                         }
                                       ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "null"
                                     },
                                     {
-                                      "type": "array",
-                                      "tuple": [
-                                        {
-                                          "type": "string"
-                                        },
-                                        {
-                                          "type": "array",
-                                          "tuple": [
-                                            {
-                                              "type": "string"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "integer"
-                                                },
-                                                {
-                                                  "type": "integer"
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "null"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "string"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "array",
-                                      "tuple": [
-                                        {
-                                          "type": "string"
-                                        },
-                                        {
-                                          "type": "array",
-                                          "tuple": [
-                                            {
-                                              "type": "string"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "integer"
-                                                },
-                                                {
-                                                  "type": "integer"
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "null"
-                                            },
-                                            {
-                                              "type": "array",
-                                              "tuple": [
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": []
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "integer"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "array",
-                                                  "tuple": [
-                                                    {
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "type": "array",
-                                                      "tuple": [
-                                                        {
-                                                          "type": "string"
-                                                        },
-                                                        {
-                                                          "type": "array",
-                                                          "tuple": [
-                                                            {
-                                                              "type": "string"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "string"
-                                            }
-                                          ]
-                                        }
-                                      ]
+                                      "type": "integer"
                                     }
                                   ]
                                 }
@@ -2081,128 +820,8 @@
             }
           }
         }
-      }
-    },
-    {
-      "id": "0b7b7c3dfdbb",
-      "origin": "https://flow.google.com",
-      "method": "POST",
-      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
-      "rpcId": "nzlxg",
-      "parameters": [
-        {
-          "name": "rpcids",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "source-path",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "bl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.sid",
-          "location": "query",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        },
-        {
-          "name": "hl",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "_reqid",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "rt",
-          "location": "query",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "f.req",
-          "location": "form",
-          "type": "string",
-          "localOnly": false,
-          "required": "unknown"
-        },
-        {
-          "name": "at",
-          "location": "form",
-          "type": "string",
-          "localOnly": true,
-          "required": "unknown"
-        }
-      ],
-      "statuses": [
-        200
-      ],
-      "verification": "observed-only",
-      "body": {
-        "mimeType": "application/x-www-form-urlencoded",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "f.req": {
-              "type": "string",
-              "decodedJson": {
-                "type": "array",
-                "tuple": [
-                  {
-                    "type": "array",
-                    "tuple": [
-                      {
-                        "type": "array",
-                        "tuple": [
-                          {
-                            "type": "string"
-                          },
-                          {
-                            "type": "string",
-                            "decodedJson": {
-                              "type": "array",
-                              "tuple": []
-                            }
-                          },
-                          {
-                            "type": "null"
-                          },
-                          {
-                            "type": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            "at": {
-              "type": "local-credential"
-            }
-          }
-        }
-      }
+      },
+      "parameterGroup": "params-82e85614"
     }
   ]
 }

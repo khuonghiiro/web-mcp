@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { readJson } from '../core.js';
 import { captureTarget, exists, siteDomain, domainFolder } from '../storage/artifacts.js';
 
-import { observe, type Observation } from './contracts.js';
+import { observe, type Observation, type CompactObservation } from './contracts.js';
 import { renderSite } from './render.js';
 
 const entrySchema = z.object({ domain: z.string(), namespace: z.string().regex(/^[a-z][a-z0-9-]{0,40}$/), scheme: z.literal('website').optional() });
@@ -31,16 +31,27 @@ async function locked<T>(root: string, run: () => Promise<T>) {
     try { handle = await open(lock, 'wx'); break; }
     catch (e) { if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e; await new Promise(r => setTimeout(r, 50)); }
   }
-  if (!handle) throw new Error('Registry website đang được cập nhật. Thử lại; nếu tiến trình trước bị dừng, kiểm tra .agents/.sites.lock.');
+  if (!handle) throw new Error('Website registry is locked. Retry; if a previous process crashed, inspect .agents/.sites.lock.');
   try { return await run(); } finally { await handle.close(); await unlink(lock); }
 }
 async function atomic(path: string, value: string) {
+  if (await exists(path)) {
+    try { if (await readFile(path, 'utf8') === value) return; } catch { /* proceed to write */ }
+  }
   const temp = path + '.' + randomUUID() + '.tmp';
   await writeFile(temp, value, { mode: 0o600 });
-  try { await rename(temp, path); } finally { if (await exists(temp)) await unlink(temp); }
+  try {
+    for (let i = 0; ; i++) {
+      try { await rename(temp, path); break; }
+      catch (e) {
+        if ((e as NodeJS.ErrnoException).code !== 'EPERM' && (e as NodeJS.ErrnoException).code !== 'EACCES' || i >= 8) throw e;
+        await new Promise(r => setTimeout(r, 40 * (i + 1)));
+      }
+    }
+  } finally { if (await exists(temp)) await unlink(temp).catch(() => {}); }
 }
 async function managed(path: string, value: string) {
-  if (await exists(path) && !(await readFile(path, 'utf8')).includes(marker)) throw new Error('Không ghi đè tài liệu không do Studio quản lý: ' + path);
+  if (await exists(path) && !(await readFile(path, 'utf8')).includes(marker)) throw new Error('Refusing to overwrite non-Studio managed document: ' + path);
   await atomic(path, value);
 }
 export async function siteGuide(root: string, url: string) {
@@ -89,21 +100,27 @@ export async function syncSiteKnowledge(root: string, dir: string, target?: stri
     const factsPath = join(folder, 'references', 'observations.json');
     let captures: Observation[] = [];
     if (await exists(factsPath)) {
-      const prior = await readJson(factsPath) as { managedBy: string; domain: string; captures: Observation[] };
+      const prior = await readJson(factsPath) as { managedBy: string; domain: string; captures: (Observation | CompactObservation)[] };
       if (prior.managedBy !== 'web-to-mcp' || prior.domain !== site.domain || !Array.isArray(prior.captures)) throw new Error('Refusing to overwrite unrelated site knowledge.');
       for (const previous of prior.captures) {
         if (previous.evidence === observation.evidence) continue;
-        if (previous.workflows && previous.endpoints.every(e => e.id)) captures.push(previous);
-        else {
-          const local = resolve(root, previous.evidence);
-          if (await exists(local)) captures.push(await observe(root, local, site.domain));
-          // Legacy endpoint-only summaries cannot be promoted to parameter contracts without evidence.
+        const local = resolve(root, previous.evidence);
+        if (await exists(local)) {
+          captures.push(await observe(root, local, site.domain));
+        } else if ('endpoints' in previous && Array.isArray(previous.endpoints) && previous.workflows && previous.endpoints.every(e => e.id)) {
+          captures.push(previous);
         }
       }
     }
     captures = [...captures, observation].sort((a, b) => a.evidence.localeCompare(b.evidence));
     await renderSite(root, site, captures, managed, atomic);
-    await atomic(factsPath, JSON.stringify({ managedBy: 'web-to-mcp', domain: site.domain, captures }, null, 2) + '\n');
+    const compactCaptures: CompactObservation[] = captures.map(c => ({
+      session: c.session,
+      evidence: c.evidence,
+      endpointIds: c.endpoints.map(e => e.id),
+      workflowNames: c.workflows.map(w => w.name)
+    }));
+    await atomic(factsPath, JSON.stringify({ managedBy: 'web-to-mcp', domain: site.domain, note: 'Compact session index; full deduplicated endpoint schemas live in api.json and workflows in browser.json.', captures: compactCaptures }, null, 2) + '\n');
     return siteGuide(root, url);
   });
 }
