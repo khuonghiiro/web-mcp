@@ -6,6 +6,27 @@ let notice = '';
 let busy = false;
 let bridge;
 let bridgeError = '';
+let lastMouse = { x: 300, y: 300 };
+const jitter = (base, spread = 0.35) => Math.round(base * (1 - spread / 2 + Math.random() * spread));
+
+async function moveMouseHumanLike(tabId, targetX, targetY) {
+  const startX = lastMouse.x;
+  const startY = lastMouse.y;
+  const dist = Math.hypot(targetX - startX, targetY - startY);
+  const steps = Math.min(8, Math.max(3, Math.floor(dist / 45)));
+
+  const midX = (startX + targetX) / 2 + (Math.random() - 0.5) * Math.min(30, dist * 0.25);
+  const midY = (startY + targetY) / 2 + (Math.random() - 0.5) * Math.min(30, dist * 0.25);
+
+  for (let i = 1; i <= steps; i++) {
+    const t = i / steps;
+    const curX = Math.round((1 - t) * (1 - t) * startX + 2 * (1 - t) * t * midX + t * t * targetX);
+    const curY = Math.round((1 - t) * (1 - t) * startY + 2 * (1 - t) * t * midY + t * t * targetY);
+    await command(tabId, 'Input.dispatchMouseEvent', { type: 'mouseMoved', x: curX, y: curY });
+    await new Promise(resolve => setTimeout(resolve, jitter(18, 0.4)));
+  }
+  lastMouse = { x: targetX, y: targetY };
+}
 const pairs = headers => Object.entries(headers ?? {}).map(([name, value]) => ({ name, value: String(value) }));
 const command = (tabId, method, params = {}) => chrome.debugger.sendCommand({ tabId }, method, params);
 
@@ -35,29 +56,32 @@ async function remoteAction(type, args) {
     await new Promise(resolve => setTimeout(resolve, 700));
   } else if (step.type === 'click') {
     const { x, y } = await evaluateAction('click', step);
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.max(0, Math.round(x - 18)), y: Math.max(0, Math.round(y - 12)) });
-    await new Promise(resolve => setTimeout(resolve, 45));
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.round(x), y: Math.round(y) });
-    await new Promise(resolve => setTimeout(resolve, 60));
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x: Math.round(x), y: Math.round(y), button: 'left', clickCount: 1 });
-    await new Promise(resolve => setTimeout(resolve, 55));
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x: Math.round(x), y: Math.round(y), button: 'left', clickCount: 1 });
+    await moveMouseHumanLike(session.tabId, x, y);
+    await new Promise(resolve => setTimeout(resolve, jitter(60, 0.4)));
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
+    await new Promise(resolve => setTimeout(resolve, jitter(65, 0.4)));
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
   } else if (step.type === 'press') {
     const keys = { Enter: 13, Tab: 9, Escape: 27, ArrowDown: 40, ArrowUp: 38, ArrowLeft: 37, ArrowRight: 39, Backspace: 8 };
     if (!keys[step.key]) throw new Error('Phím chưa hỗ trợ qua tiện ích: ' + step.key);
     await evaluateAction('press', step);
     await command(session.tabId, 'Input.dispatchKeyEvent', { type: 'keyDown', key: step.key, windowsVirtualKeyCode: keys[step.key] });
+    await new Promise(resolve => setTimeout(resolve, jitter(50, 0.4)));
     await command(session.tabId, 'Input.dispatchKeyEvent', { type: 'keyUp', key: step.key, windowsVirtualKeyCode: keys[step.key] });
   } else if (step.type === 'wait') {
     const deadline = Date.now() + 15000;
-    while (!await evaluateAction('wait', step)) { if (Date.now() > deadline) throw new Error('Hết thời gian chờ selector.'); await new Promise(resolve => setTimeout(resolve, 200)); }
+    while (!await evaluateAction('wait', step)) { if (Date.now() > deadline) throw new Error('Hết thời gian chờ selector.'); await new Promise(resolve => setTimeout(resolve, jitter(200, 0.3))); }
   } else if (step.type === 'fill') {
     const result = await evaluateAction('fill', { ...step, value: args.value });
-    if (result?.insertText) await command(session.tabId, 'Input.insertText', { text: args.value });
+    await new Promise(resolve => setTimeout(resolve, jitter(60, 0.4)));
+    if (result?.insertText) {
+      await command(session.tabId, 'Input.insertText', { text: args.value });
+      await new Promise(resolve => setTimeout(resolve, jitter(70, 0.4)));
+    }
   }
   else if (step.type === 'scroll') await evaluateAction('scroll', step);
   else throw new Error('Bước không được hỗ trợ.');
-  await new Promise(resolve => setTimeout(resolve, 350));
+  await new Promise(resolve => setTimeout(resolve, jitter(320, 0.4)));
   return evaluateAction('inspect');
 }
 async function bridgeFetch(connection, path, body) {
@@ -125,7 +149,11 @@ async function startCapture(selectedTab) {
   const next = { tabId: tab.id, targetUrl: tabUrl, requests: new Map(), entries: [], pending: new Set(), warnings: [], errors: [], bytes: 0, stopping: false };
   await chrome.debugger.attach({ tabId: tab.id }, '1.3');
   session = next;
-  try { await command(tab.id, 'Network.enable', { maxTotalBufferSize: 20_000_000, maxResourceBufferSize: 2_000_000 }); await command(tab.id, 'Runtime.enable'); }
+  try {
+    await chrome.tabs.update(tab.id, { autoDiscardable: false }).catch(() => {});
+    await command(tab.id, 'Network.enable', { maxTotalBufferSize: 20_000_000, maxResourceBufferSize: 2_000_000 });
+    await command(tab.id, 'Runtime.enable');
+  }
   catch (error) { session = undefined; await chrome.debugger.detach({ tabId: tab.id }); throw error; }
   lastCapture = undefined;
   notice = '';
@@ -139,7 +167,9 @@ chrome.debugger.onEvent.addListener((source, method, params) => {
   if (method === 'Runtime.exceptionThrown' && current.errors.length < 100) current.errors.push(params.exceptionDetails.exception?.description || params.exceptionDetails.text);
   if (method === 'Network.requestWillBeSent') {
     if (!/^https?:\/\//.test(params.request.url)) return;
-    if (params.documentURL && /^https?:/.test(params.documentURL) && new URL(params.documentURL).origin !== new URL(current.targetUrl).origin) return;
+    const reqOrigin = new URL(params.request.url).origin;
+    const targetOrigin = new URL(current.targetUrl).origin;
+    if (reqOrigin !== targetOrigin && params.documentURL && /^https?:/.test(params.documentURL) && new URL(params.documentURL).origin !== targetOrigin) return;
     if (current.entries.length + current.requests.size + current.pending.size >= 500) { current.warnings.push('Đạt giới hạn 500 yêu cầu; hãy chia thành nhiều phiên ghi.'); return; }
     current.requests.set(params.requestId, { request: params.request, startedDateTime: new Date(params.wallTime * 1000).toISOString() });
   } else if (method === 'Network.responseReceived') {
@@ -247,8 +277,8 @@ chrome.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'studio-auto') v
 chrome.tabs.onRemoved.addListener(tabId => {
   void chrome.storage.session.get('autoTarget').then(({ autoTarget }) => { if (autoTarget?.tabId === tabId) return stopAuto(); });
 });
-chrome.debugger.onDetach.addListener(source => {
-  if (session?.tabId === source.tabId) void stopAuto(); // Respect the user's Stop debugging button.
+chrome.debugger.onDetach.addListener((source, reason) => {
+  if (reason === 'canceled_by_user' && session?.tabId === source.tabId) void stopAuto(); // Respect the user's Stop debugging button.
   if (session?.tabId === source.tabId) { session = undefined; notice = 'Phiên ghi bị ngắt (tab đóng, DevTools mở hoặc bạn dừng gỡ lỗi). Hãy bắt đầu phiên mới.'; }
   chrome.action.setBadgeText({ text: '' });
 });
