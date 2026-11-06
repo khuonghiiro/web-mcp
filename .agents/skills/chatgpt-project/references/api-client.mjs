@@ -101,7 +101,40 @@ export async function searchHistory({ query, limit = 10, cursor = null }) {
     throw new Error(`AUTH_REQUIRED: HTTP ${response.status} from ChatGPT API. Refresh session via chatgpt:auth.`);
   }
   const text = await response.text();
-  return { ok: response.ok, status: response.status, data: text.startsWith('{') ? JSON.parse(text) : text, sessionDir: auth.sessionDir };
+  const parsed = text.startsWith('{') ? JSON.parse(text) : null;
+  const items = Array.isArray(parsed?.items)
+    ? parsed.items.map(i => ({ id: i.conversation_id || i.id || null, title: i.title || null, url: i.url || (i.conversation_id ? `${ORIGIN}/c/${i.conversation_id}` : null) }))
+    : undefined;
+  return {
+    ok: response.ok,
+    status: response.status,
+    request: { query, limit: Number(limit), cursor },
+    response: items ? { count: items.length, items, cursor: parsed?.cursor ?? null } : parsed,
+    sessionDir: auth.sessionDir
+  };
+}
+
+/**
+ * Extract ONLY target fields from both request and response of a captured /backend-api/global/search HAR entry.
+ */
+export function extractSearchSummary(entry) {
+  let request = undefined;
+  try {
+    const reqJson = JSON.parse(entry?.request?.postData?.text || '{}');
+    request = { query: reqJson.query ?? null, limit: reqJson.limit ?? null, cursor: reqJson.cursor ?? null };
+  } catch { /* ignore */ }
+  const status = entry?.response?.status ?? 0;
+  let response = undefined;
+  try {
+    const respJson = JSON.parse(entry?.response?.content?.text || '{}');
+    const rawItems = Array.isArray(respJson.items) ? respJson.items : [];
+    response = {
+      count: rawItems.length,
+      items: rawItems.map(i => ({ id: i.conversation_id || i.id || null, title: i.title || null })),
+      cursor: respJson.cursor ?? null
+    };
+  } catch { /* ignore */ }
+  return { ok: status >= 200 && status < 300, status, ...(request ? { request } : {}), ...(response ? { response } : {}) };
 }
 
 if (import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}` || process.argv[1]?.endsWith('api-client.mjs')) {

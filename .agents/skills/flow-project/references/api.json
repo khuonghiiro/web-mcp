@@ -822,6 +822,165 @@
         }
       },
       "parameterGroup": "params-82e85614"
+    },
+    {
+      "id": "8b98caf8cb61",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "as29s",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      },
+      "parameterGroup": "params-82e85614"
+    },
+    {
+      "id": "c4f19a80e312",
+      "origin": "https://flow.google.com",
+      "method": "POST",
+      "path": "/_/AiSandboxAngularFrontend/data/batchexecute",
+      "rpcId": "mYWVGd",
+      "parameters": [],
+      "statuses": [
+        200
+      ],
+      "verification": "observed-only",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "f.req": {
+              "type": "string",
+              "decodedJson": {
+                "type": "array",
+                "tuple": [
+                  {
+                    "type": "array",
+                    "tuple": [
+                      {
+                        "type": "array",
+                        "tuple": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "string",
+                            "decodedJson": {
+                              "type": "array",
+                              "tuple": [
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "null"
+                                    },
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "array",
+                                  "tuple": [
+                                    {
+                                      "type": "array",
+                                      "tuple": [
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "at": {
+              "type": "local-credential"
+            }
+          }
+        }
+      },
+      "parameterGroup": "params-82e85614"
     }
   ]
 }

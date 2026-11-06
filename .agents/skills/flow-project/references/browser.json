@@ -35,6 +35,54 @@
         }
       ],
       "verification": "recorded-not-replayed"
+    },
+    {
+      "name": "rename_asset",
+      "startPath": "/project/",
+      "parameters": [
+        "name"
+      ],
+      "steps": [
+        {
+          "type": "click"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "fill",
+          "parameter": "name"
+        },
+        {
+          "type": "press"
+        },
+        {
+          "type": "click"
+        }
+      ],
+      "verification": "recorded-not-replayed"
+    },
+    {
+      "name": "download_image",
+      "startPath": "/project/",
+      "parameters": [
+        "resolution"
+      ],
+      "steps": [
+        {
+          "type": "click"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait"
+        }
+      ],
+      "verification": "recorded-not-replayed"
     }
   ]
 }

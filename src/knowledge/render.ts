@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { readJson } from '../core.js';
 import { domainFolder, exists } from '../storage/artifacts.js';
 import type { Site } from './sites.js';
-import { compactEndpoints, type Observation } from './contracts.js';
+import { compactEndpoints, type Observation, type Parameter } from './contracts.js';
 import { executionSchema, chooseRoute } from './routing.js';
 
 const taskSchema = z.object({
@@ -18,9 +18,30 @@ export type Task = z.infer<typeof taskSchema>;
 export async function renderSite(root: string, site: Site, captures: Observation[], managed: (path: string, value: string) => Promise<void>, atomic: (path: string, value: string) => Promise<void>) {
   const ns = site.namespace, base = join(root, '.agents/skills'), folder = join(base, `${ns}-project`), refs = join(folder, 'references');
   const local = `artifacts/${domainFolder(site.domain)}`;
-  const rawEndpoints = [...new Map(captures.flatMap(c => c.endpoints).map(e => [e.id, e])).values()];
+  const apiFile = join(refs, 'api.json');
+  const browserFile = join(refs, 'browser.json');
+  let priorEndpoints: Observation['endpoints'] = [];
+  if (await exists(apiFile)) {
+    try {
+      const priorApi = await readJson(apiFile) as { parameterGroups?: Record<string, Parameter[]>; endpoints?: Observation['endpoints'] };
+      const groups = priorApi.parameterGroups ?? {};
+      priorEndpoints = (priorApi.endpoints ?? []).map(e => {
+        const inherited = e.parameterGroup && groups[e.parameterGroup] ? groups[e.parameterGroup] : [];
+        const { parameterGroup: _, ...rest } = e;
+        return { ...rest, parameters: [...inherited, ...(e.parameters ?? [])] };
+      });
+    } catch { /* ignore malformed prior file */ }
+  }
+  let priorWorkflows: Observation['workflows'] = [];
+  if (await exists(browserFile)) {
+    try {
+      const priorBrowser = await readJson(browserFile) as { workflows?: Observation['workflows'] };
+      priorWorkflows = priorBrowser.workflows ?? [];
+    } catch { /* ignore malformed prior file */ }
+  }
+  const rawEndpoints = [...new Map([...priorEndpoints, ...captures.flatMap(c => c.endpoints)].map(e => [e.id, e])).values()];
   const { parameterGroups, endpoints } = compactEndpoints(rawEndpoints);
-  const flows = [...new Map(captures.flatMap(c => c.workflows).map(w => [w.name, w])).values()];
+  const flows = [...new Map([...priorWorkflows, ...captures.flatMap(c => c.workflows)].map(w => [w.name, w])).values()];
   const tasksFile = join(refs, 'tasks.json');
   const indexPath = join(refs, 'skills.json');
   const previous = await exists(indexPath) ? z.array(z.object({ name: z.string(), path: z.string() })).parse(await readJson(indexPath)) : [];

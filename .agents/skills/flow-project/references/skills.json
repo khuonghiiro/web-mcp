@@ -92,17 +92,47 @@
   {
     "name": "flow:generate-image",
     "path": ".agents/skills/flow-generate-image/SKILL.md",
-    "description": "Submit an image prompt with model/aspect/count options in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`)."
+    "description": "Submit an image prompt with model/aspect/count options and optional 1-5 reference images (ingredients) in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`)."
   },
   {
     "name": "flow:api-generate-image",
     "path": ".agents/skills/flow-api-generate-image/SKILL.md",
-    "description": "Execute \"Generate images in a Flow project\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+    "description": "Execute \"Generate images in a Flow project (with optional 1-5 reference images)\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
   },
   {
     "name": "flow:browser-generate-image",
     "path": ".agents/skills/flow-browser-generate-image/SKILL.md",
-    "description": "Execute \"Generate images in a Flow project\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+    "description": "Execute \"Generate images in a Flow project (with optional 1-5 reference images)\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:rename-asset",
+    "path": ".agents/skills/flow-rename-asset/SKILL.md",
+    "description": "Rename an image or video asset (`metadata.display_name`) or move it to trash (`metadata.archived`) via verified API (`mYWVGd` + `as29s`) or the asset detail editor header (`flow-editor-header`)."
+  },
+  {
+    "name": "flow:api-rename-asset",
+    "path": ".agents/skills/flow-api-rename-asset/SKILL.md",
+    "description": "Execute \"Rename or trash an image/video asset\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-rename-asset",
+    "path": ".agents/skills/flow-browser-rename-asset/SKILL.md",
+    "description": "Execute \"Rename or trash an image/video asset\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
+  },
+  {
+    "name": "flow:download-image",
+    "path": ".agents/skills/flow-download-image/SKILL.md",
+    "description": "Download a generated image at `1K` original resolution via verified API (`as29s` signed URL) or browser UI, or trigger `2K`/`4K` upsampled downloads via browser UI (`GEM_PIX_2_UPSAMPLE_2K` / `GEM_PIX_2_UPSAMPLE_4K`)."
+  },
+  {
+    "name": "flow:api-download-image",
+    "path": ".agents/skills/flow-api-download-image/SKILL.md",
+    "description": "Execute \"Download image at 1K, 2K, or 4K resolution\" via flow.google.com API using local auth/cookies; fallback to browser on CAPTCHA or expired session."
+  },
+  {
+    "name": "flow:browser-download-image",
+    "path": ".agents/skills/flow-browser-download-image/SKILL.md",
+    "description": "Execute \"Download image at 1K, 2K, or 4K resolution\" via flow.google.com browser UI; use when CAPTCHA is required, API is unverified, or UI is requested."
   },
   {
     "name": "flow:find-assets",

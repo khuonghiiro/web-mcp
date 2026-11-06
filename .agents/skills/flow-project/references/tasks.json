@@ -179,11 +179,12 @@
   },
   {
     "id": "generate-image",
-    "title": "Generate images in a Flow project",
-    "description": "Submit an image prompt with model/aspect/count options in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
+    "title": "Generate images in a Flow project (with optional 1-5 reference images)",
+    "description": "Submit an image prompt with model/aspect/count options and optional 1-5 reference images (ingredients) in Flow; uses browser execution because standalone `ogiZ0b` RPC is gated by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
     "inputs": {
       "projectId": "Target project UUID.",
-      "prompt": "Image generation prompt text.",
+      "prompt": "Image generation prompt text (when using 1-5 reference images, explicitly state the role of each reference subject/prop/environment and how they combine).",
+      "referenceImages": "Optional 1 to 5 reference assets (up to 5) selected via `flow-add-menu` (`Thêm thành phần vào ô nhập câu lệnh`) into `flow-ingredient-bar`.",
       "options": "Optional model (`GEM_PIX_2`, `HARBOR_SEAL`, `BELUGA`), aspect ratio (`16:9`, `4:3`, `1:1`, `3:4`, `9:16`), and count (`x1`–`x4`)."
     },
     "rpcIds": [
@@ -194,26 +195,105 @@
     ],
     "api": [
       "Observed RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=ogiZ0b`.",
-      "Payload dependency mapping in `f.req` (`args = JSON.parse(envelope[0][0][1])`): `args[1]` is an array of generation items (length = output count `1..4`, or repeated entries per image); for each item `item = args[1][i]`: `item[3]` is random 32-bit integer seed, `item[4]` is aspect ratio enum (`1` = 1:1 square observed), `item[5]` is model code (`\"GEM_PIX_2\"`, `\"HARBOR_SEAL\"`, or `\"BELUGA\"`), `item[7][5]` is `projectId`, `item[7][10][0]` is the reCAPTCHA Enterprise token, and `item[8][0][0][0]` is the prompt string.",
+      "Payload dependency mapping in `f.req` (`args = JSON.parse(envelope[0][0][1])`): `args[1]` is an array of generation items (length = output count `1..4`); for each item `item = args[1][i]`: `item[2]` is `null` (no references) or an array of 1–5 reference image tuples `[[\"<assetId1>\", null, null, null, 1], ...]`, `item[3]` is random 32-bit integer seed, `item[4]` is aspect ratio enum (`5` = 4:3, `2` = 16:9, `1` = 9:16, `3` = 1:1), `item[5]` is model code (`\"GEM_PIX_2\"`, `\"HARBOR_SEAL\"`, or `\"BELUGA\"`), `item[7][5]` is `projectId`, `item[7][10][0]` is the reCAPTCHA Enterprise token, and `item[8][0][0][0]` is the prompt string.",
       "reCAPTCHA Enterprise gate: Flow loads `https://www.google.com/recaptcha/enterprise.js?trustedtypes=true&render=6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV` and attaches a single-use browser-minted token at `args[1][i][7][10][0]` and `args[3][10][0]`. Standalone API replay without a live browser-minted token returns HTTP 200 with RPC error `7 PUBLIC_ERROR_UNUSUAL_ACTIVITY`.",
       "Therefore, always route `generate-image` to `flow:browser-generate-image` so the browser executes `grecaptcha.enterprise.execute(...)` natively upon clicking submit."
     ],
     "browser": [
-      "Open `/project/<projectId>` (`flow:open-project`) and configure model/aspect/count if needed (`flow:configure-generation`).",
-      "Inspect `flow-rich-text-editor` to get the `[contenteditable=\"true\"]` selector, then call `studio_fill` with `parameter: \"prompt\"` and verify text insertion.",
+      "Open `/project/<projectId>` (`flow:open-project`) and configure model/aspect/count if needed (`flow:configure-generation`). If `button[aria-label=\"Xoá câu lệnh\"]` is present from a prior prompt, click it first to clear old text and reference chips. If any failed generation cards (`flow-error-tile`) exist in the grid, click `flow-error-tile button:nth-of-type(3)` (`Xoá`, `RPC cz8Z4b`) to clean them up.",
+      "If attaching 1–5 reference images (max 5): for each reference image, click `button[aria-label=\"Thêm thành phần vào ô nhập câu lệnh\"]` (`flow-add-menu button`), re-inspect `flow-add-menu-asset-list` buttons in `flow-add-menu-popover-content` (match by the asset's renamed title), and click the desired asset button (which auto-inserts a chip into `flow-ingredient-bar` and closes the popover). Verify chip count (`1..5`) via `studio_extract({ selector: \"flow-ingredient-chip\" })`.",
+      "Click the `flow-rich-text-editor` selector first (`studio_click`), then call `studio_fill` with `parameter: \"prompt\"`. When combining multiple reference images, explicitly describe which subject/character, prop/accessory, and background/style come from each reference image and how they interact.",
       "Inspect and click the submit button (`flow-generate-icon-button button`, `aria-label=\"Bắt đầu tạo\"`) once.",
-      "Wait and poll `studio_inspect` / `studio_network` until `ogiZ0b` completes and the generated image card renders in the project grid."
+      "Poll `studio_network` with `{ rpcId: \"ogiZ0b\" }` (`session.readRpcResult(\"ogiZ0b\")`) or `extractRpcSummary(\"ogiZ0b\", entry)` in `api-client.mjs` to extract ONLY the target fields from both `request` (`count`, `modelCode`, `aspectRatioCode`, `referenceImageIds`, `prompt`, `hasRecaptchaToken`) and `response` (`ok`, `count`, `items[{ id, workflowId, url }]`, `errorCode`) without reading unrelated HAR entries, raw `f.req` strings, or full page text."
     ],
     "success": [
-      "New image card finishes rendering in `/project/<projectId>` matching the requested prompt and count, with no RPC 7 error banner."
+      "`ogiZ0b` summary returns `ok: true` with `request` matching target options (`count`, `modelCode`, `aspectRatioCode`, `referenceImageIds`) and `response` containing the generated image `id`/`workflowId`/`url` items (no `errorCode: 7` CAPTCHA rejection)."
     ],
-    "verification": "Browser generation verified (1024x1024 image created); standalone API confirmed blocked by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
+    "verification": "Browser generation verified (1024x1024 and 1200x896 images created with 0–3 reference images); standalone API confirmed blocked by reCAPTCHA Enterprise (`PUBLIC_ERROR_UNUSUAL_ACTIVITY`).",
     "execution": {
       "api": "blocked",
       "captcha": "required",
       "browser": "verified",
       "effect": "write",
       "evidence": "Browser UI natively mints reCAPTCHA Enterprise token (sitekey 6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV) and succeeds; standalone API returns RPC 7 PUBLIC_ERROR_UNUSUAL_ACTIVITY."
+    }
+  },
+  {
+    "id": "rename-asset",
+    "title": "Rename or trash an image/video asset",
+    "description": "Rename an image or video asset (`metadata.display_name`) or move it to trash (`metadata.archived`) via verified API (`mYWVGd` + `as29s`) or the asset detail editor header (`flow-editor-header`).",
+    "inputs": {
+      "assetId": "Target asset UUID (or `workflowId` + `projectId`).",
+      "projectId": "Optional project UUID (auto-resolved via `as29s` if omitted).",
+      "name": "New display title for the image/video asset (makes selecting reference images in `flow-add-menu` clear and deterministic)."
+    },
+    "rpcIds": [
+      "mYWVGd",
+      "as29s"
+    ],
+    "workflowNames": [
+      "rename_asset"
+    ],
+    "api": [
+      "Run `node .agents/skills/flow-project/references/api-client.mjs rename-asset --id <assetId> --name \"<newTitle>\"` or call `renameAsset({ assetId, projectId, workflowId, name })` from `api-client.mjs`.",
+      "If only `assetId` is provided, `api-client.mjs` first calls `RPC as29s` (`[\"<assetId>\"]`) to resolve `workflowId` (`data[2]`) and `projectId` (`data[1]`).",
+      "Underlying mutation RPC: POST `/_/AiSandboxAngularFrontend/data/batchexecute?rpcids=mYWVGd` with args `[[workflowId, null, null, [name], projectId], [[\"metadata.display_name\"]]]`.",
+      "To move an asset to trash via API, run `node .agents/skills/flow-project/references/api-client.mjs trash-asset --id <assetId>` (`args: [[workflowId, null, null, [null, null, 1], projectId], [[\"metadata.archived\"]]]`)."
+    ],
+    "browser": [
+      "On `/project/<projectId>`, click the target image tile (`flow-grid-tile-container flow-image-tile img`) to open `/project/<projectId>/edit/<workflowId>` (`flow-editor-page`).",
+      "In `flow-editor-header`, click `flow-editable-text input`, fill with the new `name` (`studio_fill`), and press `Enter` (`studio_press` with `key: 'Enter'`).",
+      "Click `flow-editor-header button[aria-label=\"Đã chỉnh sửa xong\"]` (`Xong`) to return to the project grid; the tile footer immediately displays the updated title."
+    ],
+    "success": [
+      "API `mYWVGd` returns `ok: true` with `data[3][0] === name`, or browser grid tile footer / `flow-add-menu` displays the updated asset title."
+    ],
+    "verification": "Verified both live in browser (`flow-editor-header`) and standalone via `api-client.mjs` (`as29s` + `mYWVGd`) on 2026-11-06.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "write",
+      "evidence": "2026-11-06: renamed all 4 project images live in browser and verified standalone mYWVGd + as29s execution via api-client.mjs without CAPTCHA."
+    }
+  },
+  {
+    "id": "download-image",
+    "title": "Download image at 1K, 2K, or 4K resolution",
+    "description": "Download a generated image at `1K` original resolution via verified API (`as29s` signed URL) or browser UI, or trigger `2K`/`4K` upsampled downloads via browser UI (`GEM_PIX_2_UPSAMPLE_2K` / `GEM_PIX_2_UPSAMPLE_4K`).",
+    "inputs": {
+      "assetId": "Target image asset UUID.",
+      "resolution": "`1K` (original size, instant API or browser download), `2K` (upsampled via `GEM_PIX_2_UPSAMPLE_2K`), or `4K` (upsampled via `GEM_PIX_2_UPSAMPLE_4K`).",
+      "outputPath": "Local file path when downloading via `api-client.mjs`."
+    },
+    "rpcIds": [
+      "as29s",
+      "ogiZ0b"
+    ],
+    "workflowNames": [
+      "download_image"
+    ],
+    "api": [
+      "For `1K` original resolution (no CAPTCHA): run `node .agents/skills/flow-project/references/api-client.mjs download-asset --id <assetId> --out <outputPath>` or call `downloadAsset1K({ assetId, outputPath })`.",
+      "Underlying RPC: `POST /_/AiSandboxAngularFrontend/data/batchexecute?rpcids=as29s` with args `[\"<assetId>\"]` returns dimensions at `data[6][2]` (e.g. `[1200, 896]`) and a fresh signed `https://flow-content.google/image/<assetId>?...` download URL at `data[5][10]` / `data[6][0][13]`.",
+      "For `2K` and `4K` upsampling: Flow invokes upsample models `GEM_PIX_2_UPSAMPLE_2K` (enum `26`) and `GEM_PIX_2_UPSAMPLE_4K` (enum `27`), which require a browser-minted reCAPTCHA Enterprise token; use `flow:browser-download-image` for `2K`/`4K`."
+    ],
+    "browser": [
+      "Open the image detail view (`/project/<projectId>/edit/<workflowId>`) by clicking `flow-grid-tile-container flow-image-tile img` (or click the tile hover action button `button[aria-label=\"Tải nội dung nghe nhìn xuống\"]`).",
+      "Click `flow-editor-header button[aria-label=\"Tải nội dung nghe nhìn xuống\"]` (`downloadTải xuống`) to open the resolution menu.",
+      "Click the desired resolution item in the overlay menu: `flow-menu-item:nth-of-type(1) > button` (`1K Kích thước gốc`), `flow-menu-item:nth-of-type(2) > button` (`2K Đã tăng độ phân giải`), or `flow-menu-item:nth-of-type(3) > button` (`4K Đã tăng độ phân giải`).",
+      "`1K` downloads immediately (`Đã tải hình ảnh của bạn xuống!`); `2K` and `4K` run server-side upsampling (`Đang tăng độ phân giải cho hình ảnh của bạn, quá trình tải xuống sẽ tự động bắt đầu.`) and auto-download upon completion."
+    ],
+    "success": [
+      "`1K` file is saved to `outputPath` via API (`bytes > 0`) or browser triggers `1K`/`2K`/`4K` download toast without error."
+    ],
+    "verification": "Verified `1K` API download (`788,112` bytes saved via `as29s`) and `1K`/`2K`/`4K` browser download menu flows on 2026-11-06.",
+    "execution": {
+      "api": "verified",
+      "captcha": "not-observed",
+      "browser": "verified",
+      "effect": "read",
+      "evidence": "2026-11-06: 1K download verified standalone via as29s in api-client.mjs; 1K, 2K, and 4K download flows verified live in browser editor."
     }
   },
   {

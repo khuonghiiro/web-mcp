@@ -13,7 +13,8 @@ Read `.agents/rules/development-rules.md` when editing source code and `.agents/
   - Keep API helpers modular and reusable in `.agents/skills/<namespace>-project/references/api-client.mjs` so tasks can be chained with parameters (e.g. `create-project` followed by `rename-project --id <id> --name <newTitle>`).
 - **Capture & Knowledge Hygiene (Token-Efficient)**:
   - During scouting, correlate UI actions (`before`/`after` snapshots) with network requests (`action-trace.json`) and capture dependent UI configurations (e.g., model family vs aspect ratio, resolution, duration, output count, and reCAPTCHA token generation flows).
-  - Exclude non-business noise (telemetry, CSP/error reports, static assets, help/feedback widgets) from `api.json` and `observations.json`.
-  - Deduplicate repeated query/header/form parameters in `api.json` using `parameterGroups` + `parameterGroup` inheritance, and keep `observations.json` as a compact session index referencing endpoint IDs and workflow names.
+  - When verifying task completion (such as image/video generation or project mutation), use `studio_network({ rpcId })` / `session.readRpcResult(rpcId)` or `extractRpcSummary(rpcId, entry)` in `api-client.mjs` to extract **only** the target fields from **both request** (`count`, `modelCode`, `aspectRatioCode`, `prompt`, `hasRecaptchaToken`) **and response** (`ok`, `id`, `url`, `errorCode`). Never dump raw HAR files, raw `f.req` / `postData` bodies, full `wrb.fr` strings, or full-page `innerText` into context.
+  - Exclude non-business noise (telemetry, CSP/error reports, static assets, help/feedback widgets) from `api.json`.
+  - Deduplicate repeated query/header/form parameters in `api.json` using `parameterGroups` + `parameterGroup` inheritance. Keep `observations.json` gitignored (`.agents/skills/*/references/observations.json`) as local-only session state so account/machine-specific capture sessions are never committed to Git.
   - Keep all `.agents/skills/` and `.agents/rules/` in concise English so AI agents parse them quickly with minimal token usage.
 - **Git**: Commit in Vietnamese only when requested by the user. Never push automatically.

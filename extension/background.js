@@ -35,8 +35,13 @@ async function remoteAction(type, args) {
     await new Promise(resolve => setTimeout(resolve, 700));
   } else if (step.type === 'click') {
     const { x, y } = await evaluateAction('click', step);
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
-    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.max(0, Math.round(x - 18)), y: Math.max(0, Math.round(y - 12)) });
+    await new Promise(resolve => setTimeout(resolve, 45));
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.round(x), y: Math.round(y) });
+    await new Promise(resolve => setTimeout(resolve, 60));
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x: Math.round(x), y: Math.round(y), button: 'left', clickCount: 1 });
+    await new Promise(resolve => setTimeout(resolve, 55));
+    await command(session.tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x: Math.round(x), y: Math.round(y), button: 'left', clickCount: 1 });
   } else if (step.type === 'press') {
     const keys = { Enter: 13, Tab: 9, Escape: 27, ArrowDown: 40, ArrowUp: 38, ArrowLeft: 37, ArrowRight: 39, Backspace: 8 };
     if (!keys[step.key]) throw new Error('Phím chưa hỗ trợ qua tiện ích: ' + step.key);

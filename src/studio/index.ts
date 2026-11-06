@@ -36,7 +36,7 @@ tool('studio_press', 'Nhấn phím ở phần tử, ví dụ Enter, Tab, ArrowDo
 tool('studio_scroll', 'Cuộn trang để tải/đọc nội dung tiếp theo.', { pixels: z.number().int().min(-5000).max(5000).default(700) }, args => session.step({ type: 'scroll', pixels: args.pixels }));
 tool('studio_wait', 'Chờ selector xuất hiện, tối đa 15 giây.', { selector }, args => session.step({ type: 'wait', selector: args.selector }), true);
 tool('studio_extract', 'Trích xuất text/href từ các phần tử khớp selector; tối đa 100 phần tử, 4000 ký tự/phần tử.', { selector }, args => session.extract(args.selector), true);
-tool('studio_network', 'Liệt kê endpoint, method và status quan sát được; không trả cookie hoặc giá trị query.', {}, () => session.listNetwork(), true);
+tool('studio_network', 'Liệt kê endpoint, method và status quan sát được; truyền rpcId để chỉ trích xuất kết quả gọn của RPC cần kiểm tra (tránh đọc toàn bộ response/HAR tốn token).', { rpcId: z.string().max(64).optional() }, args => args.rpcId ? session.readRpcResult(args.rpcId) : session.listNetwork(), true);
 tool('studio_api_preview', 'Suy luận OpenAPI từ traffic đã hoàn tất để AI kiểm tra query/body schema trong lúc khám phá. Không lộ giá trị header xác thực.', { origin: z.string().url().optional() }, args => session.apiPreview(args.origin), true);
 tool('studio_runtime', 'Xem script JS đã tải, trạng thái trang, resource timing và lỗi JS để hiểu luồng chạy; không tự thực thi mã tùy ý.', {}, () => session.runtime(), true);
 tool('studio_workflow_begin', 'Bắt đầu ghi một tác vụ trình duyệt để sinh tool dùng lại. Bắt đầu từ trang gốc của tác vụ.', {}, () => session.beginWorkflow());

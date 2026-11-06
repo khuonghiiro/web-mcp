@@ -79,6 +79,124 @@ export class StudioSession {
     const har = harSchema.parse(await this.bridge.rpc('har'));
     return har.log.entries.map(e => { const url = new URL(e.request.url), rpc = url.searchParams.get('rpcids'); return { method: e.request.method, origin: url.origin, path: url.pathname, status: e.response.status, ...(rpc && /^[a-zA-Z0-9]{1,16}$/.test(rpc) ? { rpcId: rpc } : {}) }; });
   }
+  async readRpcResult(rpcId: string) {
+    if (!this.active) throw new Error('Gọi studio_start trước.');
+    const har = harSchema.parse(this.extensionMode ? await this.bridge.rpc('har') : { log: { entries: this.entries } });
+    const matches = har.log.entries.filter(e => {
+      try { return new URL(e.request.url).searchParams.get('rpcids') === rpcId || e.request.url.includes(rpcId); }
+      catch { return false; }
+    });
+    const latest = matches[matches.length - 1];
+    if (!latest) return { found: false, rpcId };
+    let request: Record<string, unknown> = { method: latest.request.method };
+    try {
+      const fReq = new URLSearchParams(latest.request.postData?.text ?? '').get('f.req');
+      if (fReq) {
+        const outerReq = JSON.parse(fReq);
+        const args = JSON.parse(outerReq?.[0]?.[0]?.[1] ?? 'null');
+        if (rpcId === 'ogiZ0b' && Array.isArray(args?.[1])) {
+          const first = args[1][0];
+          const refIds = Array.isArray(first?.[2]) ? first[2].map((r: any) => r?.[0]).filter(Boolean) : [];
+          request = {
+            count: args[1].length,
+            modelCode: first?.[5] ?? null,
+            aspectRatioCode: first?.[4] ?? null,
+            referenceImageIds: refIds,
+            prompt: first?.[8]?.[0]?.[0]?.[0] ?? null,
+            projectId: first?.[7]?.[5] ?? null,
+            hasRecaptchaToken: Boolean(first?.[7]?.[10]?.[0])
+          };
+        } else if (rpcId === 'jHPbke') {
+          request = { title: args?.[1]?.[1]?.[0] ?? null };
+        } else if (rpcId === 'o8DA4') {
+          request = { projectId: String(args?.[0] ?? '').replace(/^projects\//, '') || null, title: args?.[1]?.[0] ?? null };
+        } else if (rpcId === 'UpteDb') {
+          request = { limit: args?.[1] ?? null };
+        } else if (rpcId === 'ngNC2' || rpcId === 'Zzl0ze') {
+          request = { projectId: String(args?.[0] ?? '').replace(/^(tools\/PINHOLE\/)?projects\//, '') || null };
+        } else if (rpcId === 'as29s') {
+          request = { assetId: args?.[0] ?? null };
+        } else if (rpcId === 'mYWVGd') {
+          request = {
+            workflowId: args?.[0]?.[0] ?? null,
+            projectId: args?.[0]?.[4] ?? null,
+            displayName: args?.[0]?.[3]?.[0] ?? null,
+            archived: args?.[0]?.[3]?.[2] ?? null,
+            favorited: args?.[0]?.[3]?.[3] ?? null,
+            updateMask: args?.[1]?.[0] ?? []
+          };
+        }
+      }
+    } catch { /* ignore malformed request body */ }
+    const status = latest.response.status;
+    const text = latest.response.content?.text ?? '';
+    if (!status || !text) return { found: true, completed: false, rpcId, status, request };
+    for (const line of text.replace(/^\)\]\}'\s*/, '').split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('[[')) continue;
+      try {
+        const outer = JSON.parse(trimmed);
+        for (const item of outer) {
+          if (!Array.isArray(item) || item[0] !== 'wrb.fr' || item[1] !== rpcId) continue;
+          if (item[2] == null && Array.isArray(item[5])) {
+            return { found: true, completed: true, ok: false, rpcId, status, request, response: { errorCode: item[5][0], errorMessage: item[5][1] ?? null } };
+          }
+          const data = typeof item[2] === 'string' ? JSON.parse(item[2]) : item[2];
+          if (rpcId === 'ogiZ0b' && Array.isArray(data?.[0])) {
+            return {
+              found: true, completed: true, ok: true, rpcId, status, request,
+              response: {
+                count: data[0].length,
+                items: data[0].map((entry: any) => ({
+                  id: entry?.[0] ?? null,
+                  workflowId: entry?.[2] ?? null,
+                  seed: entry?.[6]?.[0]?.[1] ?? null,
+                  aspectRatioCode: entry?.[6]?.[0]?.[14] ?? null,
+                  url: entry?.[6]?.[0]?.[13] ?? null
+                }))
+              }
+            };
+          }
+          if (rpcId === 'as29s' && Array.isArray(data)) {
+            return {
+              found: true, completed: true, ok: true, rpcId, status, request,
+              response: {
+                assetId: data[0] ?? null,
+                projectId: data[1] ?? null,
+                workflowId: data[2] ?? null,
+                dimensions: data[6]?.[2] ?? null,
+                url: data[5]?.[10] ?? data[6]?.[0]?.[13] ?? null
+              }
+            };
+          }
+          if (rpcId === 'mYWVGd' && Array.isArray(data)) {
+            return {
+              found: true, completed: true, ok: true, rpcId, status, request,
+              response: {
+                workflowId: data[0] ?? null,
+                assetId: data[3]?.[4] ?? null,
+                displayName: data[3]?.[0] ?? null
+              }
+            };
+          }
+          if (rpcId === 'jHPbke' && Array.isArray(data)) {
+            return { found: true, completed: true, ok: true, rpcId, status, request, response: { projectId: data[0] ?? null, title: data[1]?.[0] ?? null } };
+          }
+          if (rpcId === 'o8DA4' && Array.isArray(data)) {
+            return { found: true, completed: true, ok: true, rpcId, status, request, response: { title: data[0] ?? null } };
+          }
+          if (rpcId === 'UpteDb' && Array.isArray(data?.[0])) {
+            return {
+              found: true, completed: true, ok: true, rpcId, status, request,
+              response: { count: data[0].length, projects: data[0].map((p: any) => ({ id: p?.[0] ?? null, title: p?.[1]?.[0] ?? null })) }
+            };
+          }
+          return { found: true, completed: true, ok: true, rpcId, status, request };
+        }
+      } catch { /* ignore non-JSON frame lines */ }
+    }
+    return { found: true, completed: true, ok: status >= 200 && status < 300, rpcId, status, request };
+  }
   async apiPreview(origin?: string) {
     if (!this.active) throw new Error('Gọi studio_start trước.');
     const har = this.extensionMode ? await this.bridge.rpc('har') : { log: { entries: this.entries } };

@@ -9,3 +9,4 @@ generated-mcps/*
 .codex/config.toml
 .agents/.sites.lock
 .agents/sites.json.*.tmp
+.agents/skills/*/references/observations.json
